@@ -5,6 +5,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../services/attendance_service.dart';
+import '../../services/location_service.dart';
 
 class ReliableQRScanner extends StatefulWidget {
   const ReliableQRScanner({super.key});
@@ -254,6 +255,10 @@ class _ReliableQRScannerState extends State<ReliableQRScanner>
 
       final authProvider = context.read<AuthProvider>();
       final attendanceService = AttendanceService();
+      final locationService = LocationService();
+
+      // Show location verification progress
+      _showLoadingDialog('Verifying your location...');
 
       // Parse QR data
       Map<String, dynamic> qrContent;
@@ -272,8 +277,12 @@ class _ReliableQRScannerState extends State<ReliableQRScanner>
 
       final classSessionId = qrContent['classSessionId'] as String?;
       final location = qrContent['location'] as String? ?? 'Classroom';
+      final teacherLat = qrContent['latitude'] as double?;
+      final teacherLon = qrContent['longitude'] as double?;
+      final radiusMeters = qrContent['radius'] as double? ?? 50.0;
 
       if (classSessionId == null || classSessionId.isEmpty) {
+        Navigator.of(context).pop(); // Close loading dialog
         _showDialog(
           'Invalid QR Code',
           'This QR code is not valid for attendance.',
@@ -282,23 +291,47 @@ class _ReliableQRScannerState extends State<ReliableQRScanner>
         return;
       }
 
-      // Mark attendance
-      final result = await attendanceService.markAttendance(
-        studentId: authProvider.user!.id,
-        classSessionId: classSessionId,
-        location: location,
-      );
-
-      if (result.success) {
-        _showDialog(
-          'Success!',
-          'Your attendance has been marked successfully for session: $classSessionId',
-          isError: false,
+      // Verify location if coordinates are provided
+      if (teacherLat != null && teacherLon != null) {
+        final locationResult = await locationService.verifyAttendanceLocation(
+          teacherLat: teacherLat,
+          teacherLon: teacherLon,
+          radiusMeters: radiusMeters,
         );
+
+        Navigator.of(context).pop(); // Close loading dialog
+
+        if (!locationResult.success) {
+          _showDialog('Location Error', locationResult.message, isError: true);
+          return;
+        }
+
+        if (!locationResult.isWithinRange) {
+          _showProxyDetectedDialog(locationResult);
+          return;
+        }
+
+        // Show location verification success
+        _showLocationVerifiedDialog(locationResult, () async {
+          await _proceedWithAttendance(
+            attendanceService,
+            authProvider,
+            classSessionId,
+            location,
+          );
+        });
       } else {
-        _showDialog('Failed', result.message, isError: true);
+        // No location verification needed (old QR format)
+        Navigator.of(context).pop(); // Close loading dialog
+        await _proceedWithAttendance(
+          attendanceService,
+          authProvider,
+          classSessionId,
+          location,
+        );
       }
     } catch (e) {
+      Navigator.of(context).pop(); // Close loading dialog
       debugPrint('Error marking attendance: $e');
       _showDialog('Error', 'Failed to mark attendance: $e', isError: true);
     } finally {
@@ -306,6 +339,185 @@ class _ReliableQRScannerState extends State<ReliableQRScanner>
         isProcessing = false;
       });
     }
+  }
+
+  Future<void> _proceedWithAttendance(
+    AttendanceService attendanceService,
+    AuthProvider authProvider,
+    String classSessionId,
+    String location,
+  ) async {
+    // Mark attendance
+    final result = await attendanceService.markAttendance(
+      studentId: authProvider.user!.id,
+      classSessionId: classSessionId,
+      location: location,
+    );
+
+    if (result.success) {
+      _showDialog(
+        'Success!',
+        'Your attendance has been marked successfully for session: $classSessionId',
+        isError: false,
+      );
+    } else {
+      _showDialog('Failed', result.message, isError: true);
+    }
+  }
+
+  void _showLoadingDialog(String message) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        content: Row(
+          children: [
+            const CircularProgressIndicator(),
+            const SizedBox(width: 16),
+            Expanded(child: Text(message)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showLocationVerifiedDialog(
+    AttendanceLocationResult locationResult,
+    VoidCallback onProceed,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.location_on, color: Colors.green[600]),
+            const SizedBox(width: 8),
+            const Text('Location Verified'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'You are within the attendance area.',
+              style: TextStyle(color: Colors.green[700]),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Distance from classroom: ${locationResult.distance?.toStringAsFixed(1) ?? 'N/A'}m',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              cameraController?.start();
+              setState(() {
+                scannedData = '';
+                isProcessing = false;
+              });
+            },
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              onProceed();
+            },
+            child: const Text('Mark Attendance'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showProxyDetectedDialog(AttendanceLocationResult locationResult) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.warning, color: Colors.red[600]),
+            const SizedBox(width: 8),
+            const Text('Proxy Attendance Detected'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'You are not within the required attendance area.',
+              style: TextStyle(
+                color: Colors.red[700],
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.red[50],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.red[200]!),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Location Details:',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red[800],
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Your distance: ${locationResult.distance?.toStringAsFixed(1) ?? 'N/A'}m',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  Text(
+                    'Required range: ${locationResult.radiusMeters?.toStringAsFixed(0) ?? '50'}m',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Please move closer to the classroom and try again.',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).pop(); // Go back to dashboard
+            },
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              cameraController?.start();
+              setState(() {
+                scannedData = '';
+                isProcessing = false;
+              });
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.orange,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Try Again'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showDialog(String title, String message, {required bool isError}) {

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'permission_aware_qr_scanner.dart';
 import 'reliable_qr_scanner.dart';
-import 'basic_qr_scanner_screen.dart';
 
 class CombinedQRScannerScreen extends StatelessWidget {
   const CombinedQRScannerScreen({super.key});
@@ -21,19 +19,19 @@ class CombinedQRScannerScreen extends StatelessWidget {
           children: [
             Icon(
               Icons.qr_code_scanner,
-              size: 100,
+              size: 120,
               color: Theme.of(context).colorScheme.primary,
             ),
             const SizedBox(height: 30),
             Text(
-              'Choose Attendance Method',
+              'Mark Your Attendance',
               style: Theme.of(
                 context,
               ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             Text(
-              'Select how you would like to mark your attendance:',
+              'Scan the QR code displayed by your teacher to mark your attendance',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyLarge,
             ),
@@ -48,46 +46,15 @@ class CombinedQRScannerScreen extends StatelessWidget {
                     ),
                   );
                 },
-                icon: const Icon(Icons.camera_alt),
-                label: const Text('Scan QR Code with Camera'),
+                icon: const Icon(Icons.camera_alt, size: 28),
+                label: const Text(
+                  'Scan QR Code',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                ),
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const PermissionAwareQRScanner(),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.security),
-                label: const Text('Advanced Scanner (with Permissions)'),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const BasicQRScannerScreen(),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.keyboard),
-                label: const Text('Enter QR Code Manually'),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Colors.white,
                 ),
               ),
             ),
@@ -95,29 +62,33 @@ class CombinedQRScannerScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.blue.shade50,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.blue.shade200),
+                color: Colors.green.shade50,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.green.shade200),
               ),
               child: Column(
                 children: [
-                  Icon(Icons.info_outline, color: Colors.blue.shade600),
+                  Row(
+                    children: [
+                      Icon(Icons.info_outline, color: Colors.green.shade600),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Important Notes:',
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green.shade800,
+                        ),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 8),
                   Text(
-                    'Tips:',
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue.shade800,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '• Use "Scan QR Code" for fastest experience\n'
-                    '• Try "Advanced Scanner" if basic scanning fails\n'
-                    '• Use manual entry if camera is unavailable\n'
-                    '• Ask your teacher for QR code data if needed',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.blue.shade700,
+                    '• You must be within the classroom range to mark attendance\n'
+                    '• The system will verify your location automatically\n'
+                    '• Ask your teacher to display the QR code\n'
+                    '• Attendance is marked only once per session',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.green.shade700,
                     ),
                   ),
                 ],

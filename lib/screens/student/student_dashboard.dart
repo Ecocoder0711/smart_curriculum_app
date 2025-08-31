@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/language_provider.dart';
+import '../../providers/theme_provider.dart';
+import '../../utils/app_localizations.dart';
 import '../../widgets/dashboard_card.dart';
 import '../../widgets/activity_card.dart';
 import 'combined_qr_scanner_screen.dart';
+import '../common/settings_screen.dart';
 import '../../models/user.dart';
 
 class StudentDashboard extends StatefulWidget {
@@ -441,16 +445,16 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Student Profile'),
+            title: Text(AppLocalizations.of(context).studentProfile),
             backgroundColor: Theme.of(context).colorScheme.primary,
             foregroundColor: Theme.of(context).colorScheme.onPrimary,
             actions: [
               if (_isEditing)
                 TextButton(
                   onPressed: _saveProfile,
-                  child: const Text(
-                    'Save',
-                    style: TextStyle(
+                  child: Text(
+                    AppLocalizations.of(context).translate('save'),
+                    style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
@@ -558,7 +562,7 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Personal Information',
+                            AppLocalizations.of(context).personalInformation,
                             style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(fontWeight: FontWeight.bold),
                           ),
@@ -802,8 +806,14 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                               Icons.assignment,
                               color: Colors.orange,
                             ),
-                            title: const Text('Assignments'),
-                            subtitle: const Text('View pending assignments'),
+                            title: Text(
+                              AppLocalizations.of(context).assignments,
+                            ),
+                            subtitle: Text(
+                              AppLocalizations.of(
+                                context,
+                              ).viewPendingAssignments,
+                            ),
                             trailing: const Icon(Icons.arrow_forward_ios),
                             onTap: _viewAssignments,
                           ),
@@ -812,8 +822,10 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                               Icons.grade,
                               color: Colors.purple,
                             ),
-                            title: const Text('Grades'),
-                            subtitle: const Text('Check your grades'),
+                            title: Text(AppLocalizations.of(context).grades),
+                            subtitle: Text(
+                              AppLocalizations.of(context).checkYourGrades,
+                            ),
                             trailing: const Icon(Icons.arrow_forward_ios),
                             onTap: _viewGrades,
                           ),
@@ -831,14 +843,16 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Settings',
+                            AppLocalizations.of(context).settings,
                             style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 12),
                           ListTile(
                             leading: const Icon(Icons.notifications),
-                            title: const Text('Notifications'),
+                            title: Text(
+                              AppLocalizations.of(context).notifications,
+                            ),
                             trailing: Switch(
                               value: true,
                               onChanged: (value) {
@@ -846,39 +860,67 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                               },
                             ),
                           ),
-                          ListTile(
-                            leading: const Icon(Icons.dark_mode),
-                            title: const Text('Dark Mode'),
-                            trailing: Switch(
-                              value: false,
-                              onChanged: (value) {
-                                // TODO: Update theme preferences
-                              },
-                            ),
+                          Consumer<ThemeProvider>(
+                            builder: (context, themeProvider, child) {
+                              return ListTile(
+                                leading: const Icon(Icons.dark_mode),
+                                title: Text(
+                                  AppLocalizations.of(context).darkMode,
+                                ),
+                                trailing: Switch(
+                                  value: themeProvider.isDarkMode,
+                                  onChanged: (value) {
+                                    themeProvider.toggleTheme();
+                                  },
+                                ),
+                              );
+                            },
                           ),
-                          ListTile(
-                            leading: const Icon(Icons.language),
-                            title: const Text('Language'),
-                            subtitle: const Text('English'),
-                            trailing: const Icon(Icons.arrow_forward_ios),
-                            onTap: _changeLanguage,
+                          Consumer<LanguageProvider>(
+                            builder: (context, languageProvider, child) {
+                              return ListTile(
+                                leading: const Icon(Icons.language),
+                                title: Text(
+                                  AppLocalizations.of(context).language,
+                                ),
+                                subtitle: Text(
+                                  languageProvider.currentLanguageName,
+                                ),
+                                trailing: const Icon(Icons.arrow_forward_ios),
+                                onTap: _changeLanguage,
+                              );
+                            },
                           ),
                           ListTile(
                             leading: const Icon(Icons.security),
-                            title: const Text('Privacy & Security'),
+                            title: Text(
+                              AppLocalizations.of(context).privacySecurity,
+                            ),
                             trailing: const Icon(Icons.arrow_forward_ios),
                             onTap: _openPrivacySettings,
                           ),
                           ListTile(
-                            leading: const Icon(
+                            leading: Icon(
                               Icons.logout,
-                              color: Colors.red,
+                              color:
+                                  Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Colors.redAccent
+                                  : Colors.red,
                             ),
-                            title: const Text(
-                              'Logout',
-                              style: TextStyle(color: Colors.red),
+                            title: Text(
+                              AppLocalizations.of(context).logout,
+                              style: TextStyle(
+                                color:
+                                    Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.redAccent
+                                    : Colors.red,
+                              ),
                             ),
-                            subtitle: const Text('Sign out of your account'),
+                            subtitle: Text(
+                              AppLocalizations.of(context).signOutAccount,
+                            ),
                             trailing: const Icon(Icons.arrow_forward_ios),
                             onTap: _showLogoutDialog,
                           ),
@@ -1139,39 +1181,51 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
   }
 
   void _changeLanguage() {
+    final languageProvider = Provider.of<LanguageProvider>(
+      context,
+      listen: false,
+    );
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Select Language'),
+        title: Text(AppLocalizations.of(context).translate('select_language')),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: const Text('English'),
+              title: Text(AppLocalizations.of(context).translate('english')),
               leading: Radio(
-                value: 'en',
-                groupValue: 'en',
-                onChanged: (value) {},
+                value: 'English',
+                groupValue: languageProvider.currentLanguageName,
+                onChanged: (value) {
+                  if (value != null) {
+                    languageProvider.changeLanguage(value);
+                    Navigator.pop(context);
+                  }
+                },
               ),
-              onTap: () => Navigator.pop(context),
+              onTap: () {
+                languageProvider.changeLanguage('English');
+                Navigator.pop(context);
+              },
             ),
             ListTile(
-              title: const Text('Hindi'),
+              title: Text(AppLocalizations.of(context).translate('hindi')),
               leading: Radio(
-                value: 'hi',
-                groupValue: 'en',
-                onChanged: (value) {},
+                value: 'हिंदी',
+                groupValue: languageProvider.currentLanguageName,
+                onChanged: (value) {
+                  if (value != null) {
+                    languageProvider.changeLanguage(value);
+                    Navigator.pop(context);
+                  }
+                },
               ),
-              onTap: () => Navigator.pop(context),
-            ),
-            ListTile(
-              title: const Text('Spanish'),
-              leading: Radio(
-                value: 'es',
-                groupValue: 'en',
-                onChanged: (value) {},
-              ),
-              onTap: () => Navigator.pop(context),
+              onTap: () {
+                languageProvider.changeLanguage('हिंदी');
+                Navigator.pop(context);
+              },
             ),
           ],
         ),
@@ -1180,44 +1234,9 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
   }
 
   void _openPrivacySettings() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => Scaffold(
-          appBar: AppBar(title: const Text('Privacy & Security')),
-          body: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.lock),
-                  title: const Text('Change Password'),
-                  subtitle: const Text('Update your account password'),
-                  trailing: const Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    // TODO: Implement change password
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.fingerprint),
-                  title: const Text('Biometric Authentication'),
-                  subtitle: const Text('Enable fingerprint/face unlock'),
-                  trailing: Switch(value: false, onChanged: (value) {}),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.visibility),
-                  title: const Text('Profile Visibility'),
-                  subtitle: const Text('Control who can see your profile'),
-                  trailing: const Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    // TODO: Implement profile visibility settings
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
   }
 
   void _showLogoutDialog() {
