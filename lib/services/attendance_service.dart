@@ -1,3 +1,4 @@
+import 'dart:convert';
 import '../models/attendance.dart';
 import 'demo_data_service.dart';
 
@@ -103,7 +104,26 @@ class AttendanceService {
     return _demoService.getAttendanceStatsForStudent(studentId, subjectId);
   }
 
-  // Generate QR code data for teachers
+  // Generate QR code data for teachers with location
+  String generateQRDataWithLocation({
+    required String classSessionId,
+    required String location,
+    required double teacherLat,
+    required double teacherLon,
+    double radiusMeters = 50.0,
+  }) {
+    final qrData = {
+      'classSessionId': classSessionId,
+      'location': location,
+      'teacherLat': teacherLat,
+      'teacherLon': teacherLon,
+      'radiusMeters': radiusMeters,
+      'timestamp': DateTime.now().millisecondsSinceEpoch,
+    };
+    return jsonEncode(qrData);
+  }
+
+  // Legacy QR code generation (for backward compatibility)
   String generateQRData(String classSessionId, String location) {
     return '$classSessionId:$location';
   }

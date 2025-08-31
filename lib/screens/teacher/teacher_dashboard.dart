@@ -419,6 +419,41 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                             style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(fontWeight: FontWeight.bold),
                           ),
+                          if (!_isEditing) ...[
+                            const SizedBox(height: 4),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 3,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.blue.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: Colors.blue.withOpacity(0.3),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.edit,
+                                    size: 12,
+                                    color: Colors.blue[700],
+                                  ),
+                                  const SizedBox(width: 3),
+                                  Text(
+                                    'Tap edit to modify fields',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.blue[700],
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                           const SizedBox(height: 16),
                           _buildProfileField(
                             'Full Name',
@@ -665,6 +700,19 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
               ),
             ),
           ),
+          floatingActionButton: !_isEditing
+              ? FloatingActionButton.extended(
+                  onPressed: () {
+                    setState(() {
+                      _isEditing = true;
+                    });
+                  },
+                  icon: const Icon(Icons.edit),
+                  label: const Text('Edit Profile'),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Colors.white,
+                )
+              : null,
         );
       },
     );
@@ -677,17 +725,31 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
     String? Function(String?)? validator,
     bool enabled = true,
   }) {
+    final isFieldEnabled = _isEditing && enabled;
+
     return TextFormField(
       controller: controller,
-      enabled: _isEditing && enabled,
+      enabled: isFieldEnabled,
       validator: validator,
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon),
+        prefixIcon: Icon(icon, color: isFieldEnabled ? null : Colors.grey[400]),
+        suffixIcon: !isFieldEnabled
+            ? Tooltip(
+                message: 'Tap the edit button to modify this field',
+                child: Icon(
+                  Icons.lock_outline,
+                  size: 18,
+                  color: Colors.grey[400],
+                ),
+              )
+            : null,
         border: const OutlineInputBorder(),
-        filled: !enabled || !_isEditing,
-        fillColor: Colors.grey[100],
+        filled: !isFieldEnabled,
+        fillColor: !isFieldEnabled ? Colors.grey[50] : null,
+        labelStyle: TextStyle(color: isFieldEnabled ? null : Colors.grey[500]),
       ),
+      style: TextStyle(color: isFieldEnabled ? null : Colors.grey[600]),
     );
   }
 
