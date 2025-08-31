@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/dashboard_card.dart';
 import '../../widgets/activity_card.dart';
-import '../qr_generator_screen.dart';
+import 'qr_generator_screen.dart';
 import '../../models/user.dart';
 
 class TeacherDashboard extends StatefulWidget {
@@ -240,11 +240,14 @@ class TeacherHomeScreen extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          // TODO: Create new activity
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const QRGeneratorScreen()),
+          );
         },
-        child: const Icon(Icons.add),
+        icon: const Icon(Icons.qr_code),
+        label: const Text('Generate QR'),
       ),
     );
   }
@@ -353,12 +356,43 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                     });
                   },
                 ),
-              TextButton.icon(
-                onPressed: _showLogoutDialog,
-                icon: const Icon(Icons.logout, color: Colors.white),
-                label: const Text(
-                  'Logout',
-                  style: TextStyle(color: Colors.white),
+              Container(
+                margin: const EdgeInsets.only(right: 8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  gradient: LinearGradient(
+                    colors: [Colors.red.shade400, Colors.red.shade600],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: _showLogoutDialog,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.logout, color: Colors.white, size: 18),
+                          const SizedBox(width: 6),
+                          const Text(
+                            'Logout',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -788,24 +822,64 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
     );
   }
 
-  void _saveProfile() {
+  void _saveProfile() async {
     if (_formKey.currentState!.validate()) {
-      // TODO: Implement profile update functionality
-      setState(() {
-        _isEditing = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Row(
-            children: [
-              Icon(Icons.check_circle, color: Colors.white),
-              SizedBox(width: 8),
-              Text('Profile updated successfully!'),
-            ],
+      try {
+        final authProvider = context.read<AuthProvider>();
+        final currentUser = authProvider.user;
+
+        if (currentUser is Teacher) {
+          // Create updated teacher with new data
+          final updatedTeacher = Teacher(
+            id: currentUser.id,
+            name: _nameController.text.trim(),
+            email: currentUser.email,
+            profileImage: currentUser.profileImage,
+            createdAt: currentUser.createdAt,
+            updatedAt: DateTime.now(),
+            department: _departmentController.text.trim(),
+            subjects: currentUser.subjects,
+            employeeId: currentUser.employeeId,
+          );
+
+          // Update the user in AuthProvider
+          final success = await authProvider.updateUser(updatedTeacher);
+
+          if (success) {
+            setState(() {
+              _isEditing = false;
+            });
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Row(
+                  children: [
+                    Icon(Icons.check_circle, color: Colors.white),
+                    SizedBox(width: 8),
+                    Text('Profile updated successfully!'),
+                  ],
+                ),
+                backgroundColor: Colors.green,
+              ),
+            );
+          } else {
+            throw Exception('Failed to update profile');
+          }
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.error, color: Colors.white),
+                const SizedBox(width: 8),
+                Text('Failed to update profile: $e'),
+              ],
+            ),
+            backgroundColor: Colors.red,
           ),
-          backgroundColor: Colors.green,
-        ),
-      );
+        );
+      }
     }
   }
 
@@ -967,21 +1041,83 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
   void _showLogoutDialog() {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: const Text('Logout'),
-        content: const Text('Are you sure you want to logout?'),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.red.shade100,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(Icons.logout, color: Colors.red.shade600, size: 24),
+            ),
+            const SizedBox(width: 12),
+            const Text(
+              'Logout',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Are you sure you want to logout?',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'You will need to login again to access your account.',
+              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+            ),
+          ],
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: Text(
+              'Cancel',
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
               context.read<AuthProvider>().logout();
             },
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Logout'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              elevation: 2,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.logout, size: 18),
+                const SizedBox(width: 6),
+                const Text(
+                  'Logout',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
           ),
         ],
       ),

@@ -1,4 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Camera permission for QR code scanning -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- Location permissions for attendance verification -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- Internet permission for API calls -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    
     <application
         android:label="smart_curriculum_app"
         android:name="${applicationName}"

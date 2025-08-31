@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import '../models/user.dart';
 import '../models/curriculum.dart';
 import '../models/activity.dart';
@@ -190,8 +191,10 @@ class DemoDataService {
   User? authenticateUser(String email, String password) {
     // In a real app, this would verify against a secure backend
     // For demo purposes, find user by email
-    print('DEBUG: DemoDataService authenticateUser called with email: $email');
-    print(
+    debugPrint(
+      'DEBUG: DemoDataService authenticateUser called with email: $email',
+    );
+    debugPrint(
       'DEBUG: Available demo users: ${_demoUsers.map((u) => '${u.email} (${u.role})').toList()}',
     );
 
@@ -199,10 +202,10 @@ class DemoDataService {
       final user = _demoUsers.firstWhere(
         (user) => user.email.toLowerCase() == email.toLowerCase(),
       );
-      print('DEBUG: Found user: ${user.toJson()}');
+      debugPrint('DEBUG: Found user: ${user.toJson()}');
       return user;
     } catch (e) {
-      print('DEBUG: User not found for email: $email');
+      debugPrint('DEBUG: User not found for email: $email');
       // Return null if user not found
       return null;
     }

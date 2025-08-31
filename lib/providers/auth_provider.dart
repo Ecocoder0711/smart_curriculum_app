@@ -29,15 +29,15 @@ class AuthProvider with ChangeNotifier {
     _clearError();
 
     try {
-      print('DEBUG: AuthProvider login called with email: $email');
+      debugPrint('DEBUG: AuthProvider login called with email: $email');
       final result = await _authService.login(email, password);
-      print(
+      debugPrint(
         'DEBUG: AuthService login result: ${result.success}, message: ${result.message}',
       );
 
       if (result.success) {
         _user = _authService.currentUser;
-        print('DEBUG: AuthProvider set user: ${_user?.toJson()}');
+        debugPrint('DEBUG: AuthProvider set user: ${_user?.toJson()}');
         notifyListeners();
         return true;
       } else {
@@ -45,7 +45,7 @@ class AuthProvider with ChangeNotifier {
         return false;
       }
     } catch (e) {
-      print('DEBUG: AuthProvider login error: $e');
+      debugPrint('DEBUG: AuthProvider login error: $e');
       _setError('An unexpected error occurred');
       return false;
     } finally {
@@ -152,6 +152,20 @@ class AuthProvider with ChangeNotifier {
       return false;
     } finally {
       _setLoading(false);
+    }
+  }
+
+  // Update user profile
+  Future<bool> updateUser(User updatedUser) async {
+    try {
+      // For now, just update locally since we're using demo data
+      // In a real app, this would call an API to update the server
+      _user = updatedUser;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _setError('Failed to update user profile');
+      return false;
     }
   }
 

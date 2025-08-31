@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/dashboard_card.dart';
 import '../../widgets/activity_card.dart';
-import 'qr_scanner_screen.dart';
+import 'combined_qr_scanner_screen.dart';
 import '../../models/user.dart';
 
 class StudentDashboard extends StatefulWidget {
@@ -72,7 +72,7 @@ class StudentHomeScreen extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => const QRScannerScreen(),
+                  builder: (context) => const CombinedQRScannerScreen(),
                 ),
               );
             },
@@ -131,9 +131,8 @@ class StudentHomeScreen extends StatelessWidget {
                                   vertical: 2,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.secondary.withOpacity(0.1),
+                                  color: Theme.of(context).colorScheme.secondary
+                                      .withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Text(
@@ -282,7 +281,7 @@ class StudentHomeScreen extends StatelessWidget {
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => const QRScannerScreen(),
+                          builder: (context) => const CombinedQRScannerScreen(),
                         ),
                       );
                     },
@@ -334,7 +333,7 @@ class _QuickActionCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(icon, color: color, size: 32),
@@ -466,12 +465,43 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                     });
                   },
                 ),
-              TextButton.icon(
-                onPressed: _showLogoutDialog,
-                icon: const Icon(Icons.logout, color: Colors.white),
-                label: const Text(
-                  'Logout',
-                  style: TextStyle(color: Colors.white),
+              Container(
+                margin: const EdgeInsets.only(right: 8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  gradient: LinearGradient(
+                    colors: [Colors.red.shade400, Colors.red.shade600],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: _showLogoutDialog,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.logout, color: Colors.white, size: 18),
+                          const SizedBox(width: 6),
+                          const Text(
+                            'Logout',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -490,7 +520,7 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                           radius: 60,
                           backgroundColor: Theme.of(
                             context,
-                          ).colorScheme.primary.withOpacity(0.1),
+                          ).colorScheme.primary.withValues(alpha: 0.1),
                           child: Icon(
                             Icons.person,
                             size: 80,
@@ -751,7 +781,8 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => const QRScannerScreen(),
+                                  builder: (context) =>
+                                      const CombinedQRScannerScreen(),
                                 ),
                               );
                             },
@@ -939,7 +970,7 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
@@ -963,24 +994,66 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
     );
   }
 
-  void _saveProfile() {
+  void _saveProfile() async {
     if (_formKey.currentState!.validate()) {
-      // TODO: Implement profile update functionality
-      setState(() {
-        _isEditing = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Row(
-            children: [
-              Icon(Icons.check_circle, color: Colors.white),
-              SizedBox(width: 8),
-              Text('Profile updated successfully!'),
-            ],
+      try {
+        final authProvider = context.read<AuthProvider>();
+        final currentUser = authProvider.user;
+
+        if (currentUser is Student) {
+          // Create updated student with new name
+          final updatedStudent = Student(
+            id: currentUser.id,
+            name: _nameController.text.trim(),
+            email: currentUser.email,
+            profileImage: currentUser.profileImage,
+            createdAt: currentUser.createdAt,
+            updatedAt: DateTime.now(),
+            rollNumber: currentUser.rollNumber,
+            className: currentUser.className,
+            section: currentUser.section,
+            semester: currentUser.semester,
+            department: currentUser.department,
+          );
+
+          // Update the user in AuthProvider
+          final success = await authProvider.updateUser(updatedStudent);
+
+          if (success) {
+            setState(() {
+              _isEditing = false;
+            });
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Row(
+                  children: [
+                    Icon(Icons.check_circle, color: Colors.white),
+                    SizedBox(width: 8),
+                    Text('Profile updated successfully!'),
+                  ],
+                ),
+                backgroundColor: Colors.green,
+              ),
+            );
+          } else {
+            throw Exception('Failed to update profile');
+          }
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.error, color: Colors.white),
+                const SizedBox(width: 8),
+                Text('Failed to update profile: $e'),
+              ],
+            ),
+            backgroundColor: Colors.red,
           ),
-          backgroundColor: Colors.green,
-        ),
-      );
+        );
+      }
     }
   }
 
@@ -1150,21 +1223,83 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
   void _showLogoutDialog() {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: const Text('Logout'),
-        content: const Text('Are you sure you want to logout?'),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.red.shade100,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(Icons.logout, color: Colors.red.shade600, size: 24),
+            ),
+            const SizedBox(width: 12),
+            const Text(
+              'Logout',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Are you sure you want to logout?',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'You will need to login again to access your account.',
+              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+            ),
+          ],
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: Text(
+              'Cancel',
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
               context.read<AuthProvider>().logout();
             },
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Logout'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              elevation: 2,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.logout, size: 18),
+                const SizedBox(width: 6),
+                const Text(
+                  'Logout',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
           ),
         ],
       ),

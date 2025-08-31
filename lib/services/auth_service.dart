@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
@@ -73,18 +74,18 @@ class AuthService {
 
   Future<AuthResult> login(String email, String password) async {
     try {
-      print('DEBUG: AuthService login called with email: $email');
+      debugPrint('DEBUG: AuthService login called with email: $email');
 
       // Use demo authentication
       if (_isDemoMode) {
-        print('DEBUG: Using demo mode authentication');
+        debugPrint('DEBUG: Using demo mode authentication');
         final user = _demoService.authenticateUser(email, password);
-        print('DEBUG: DemoService returned user: ${user?.toJson()}');
+        debugPrint('DEBUG: DemoService returned user: ${user?.toJson()}');
 
         if (user != null) {
           _token = 'demo_token_${DateTime.now().millisecondsSinceEpoch}';
           _currentUser = user;
-          print(
+          debugPrint(
             'DEBUG: Set current user in AuthService: ${_currentUser?.toJson()}',
           );
 
@@ -92,7 +93,7 @@ class AuthService {
 
           return AuthResult(success: true, message: 'Login successful');
         } else {
-          print('DEBUG: Authentication failed - user is null');
+          debugPrint('DEBUG: Authentication failed - user is null');
           return AuthResult(success: false, message: 'Invalid credentials');
         }
       }

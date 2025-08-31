@@ -446,16 +446,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   currentPasswordController.text,
                   newPasswordController.text,
                 );
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Password changed successfully'),
-                  ),
-                );
+                if (context.mounted) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Password changed successfully'),
+                    ),
+                  );
+                }
               } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Failed to change password: $e')),
-                );
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Failed to change password: $e')),
+                  );
+                }
               }
             },
             child: const Text('Change'),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
-import 'register_screen.dart';
 import 'forgot_password_screen.dart';
+import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -28,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_formKey.currentState!.validate()) {
       final authProvider = context.read<AuthProvider>();
 
-      print(
+      debugPrint(
         'DEBUG: Attempting login with email: ${_emailController.text.trim()}',
       );
 
@@ -37,8 +37,10 @@ class _LoginScreenState extends State<LoginScreen> {
         _passwordController.text,
       );
 
-      print('DEBUG: Login success: $success');
-      print('DEBUG: Current user after login: ${authProvider.user?.toJson()}');
+      debugPrint('DEBUG: Login success: $success');
+      debugPrint(
+        'DEBUG: Current user after login: ${authProvider.user?.toJson()}',
+      );
 
       if (!success && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
