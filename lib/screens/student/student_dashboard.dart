@@ -39,17 +39,23 @@ class _StudentDashboardState extends State<StudentDashboard> {
             _selectedIndex = index;
           });
         },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.schedule),
-            label: 'Schedule',
+            icon: const Icon(Icons.home),
+            label: AppLocalizations.of(context).home,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.check_circle),
-            label: 'Attendance',
+            icon: const Icon(Icons.schedule),
+            label: AppLocalizations.of(context).schedule,
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.check_circle),
+            label: AppLocalizations.of(context).attendance,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.person),
+            label: AppLocalizations.of(context).profile,
+          ),
         ],
       ),
     );
@@ -63,7 +69,11 @@ class StudentHomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dashboard'),
+        title: Text(AppLocalizations.of(context).dashboard),
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.black
+            : Theme.of(context).colorScheme.primary,
+        foregroundColor: Colors.white,
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications),
@@ -119,7 +129,7 @@ class StudentHomeScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Welcome back,',
+                                '${AppLocalizations.of(context).welcome},',
                                 style: Theme.of(context).textTheme.bodyMedium
                                     ?.copyWith(color: Colors.grey[600]),
                               ),
@@ -365,7 +375,13 @@ class StudentScheduleScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Schedule')),
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context).schedule),
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.black
+            : Theme.of(context).colorScheme.primary,
+        foregroundColor: Colors.white,
+      ),
       body: const Center(child: Text('Schedule Screen - Coming Soon')),
     );
   }
@@ -377,7 +393,13 @@ class StudentAttendanceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('My Attendance')),
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context).attendance),
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.black
+            : Theme.of(context).colorScheme.primary,
+        foregroundColor: Colors.white,
+      ),
       body: const Center(child: Text('Attendance Screen - Coming Soon')),
     );
   }
@@ -446,8 +468,10 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
         return Scaffold(
           appBar: AppBar(
             title: Text(AppLocalizations.of(context).studentProfile),
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            foregroundColor: Theme.of(context).colorScheme.onPrimary,
+            backgroundColor: Theme.of(context).brightness == Brightness.dark
+                ? Colors.black
+                : Theme.of(context).colorScheme.primary,
+            foregroundColor: Colors.white,
             actions: [
               if (_isEditing)
                 TextButton(
@@ -590,7 +614,9 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                                   ),
                                   const SizedBox(width: 3),
                                   Text(
-                                    'Tap edit to modify fields',
+                                    AppLocalizations.of(
+                                      context,
+                                    ).tapEditToModify,
                                     style: TextStyle(
                                       fontSize: 10,
                                       color: Colors.blue[700],
@@ -603,7 +629,7 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                           ],
                           const SizedBox(height: 16),
                           _buildProfileField(
-                            'Full Name',
+                            AppLocalizations.of(context).fullName,
                             _nameController,
                             Icons.person,
                             validator: (value) {
@@ -615,7 +641,7 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                           ),
                           const SizedBox(height: 16),
                           _buildProfileField(
-                            'Email',
+                            AppLocalizations.of(context).email,
                             _emailController,
                             Icons.email,
                             enabled: false,
@@ -634,13 +660,13 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Academic Information',
+                            AppLocalizations.of(context).academicInformation,
                             style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 16),
                           _buildProfileField(
-                            'Roll Number',
+                            AppLocalizations.of(context).rollNumber,
                             _rollNumberController,
                             Icons.badge,
                             enabled: false,
@@ -650,7 +676,7 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                             children: [
                               Expanded(
                                 child: _buildProfileField(
-                                  'Class',
+                                  AppLocalizations.of(context).className,
                                   _classNameController,
                                   Icons.class_,
                                   enabled: false,
@@ -659,7 +685,7 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                               const SizedBox(width: 12),
                               Expanded(
                                 child: _buildProfileField(
-                                  'Section',
+                                  AppLocalizations.of(context).section,
                                   _sectionController,
                                   Icons.group,
                                   enabled: false,
@@ -672,7 +698,7 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                             children: [
                               Expanded(
                                 child: _buildProfileField(
-                                  'Semester',
+                                  AppLocalizations.of(context).semester,
                                   TextEditingController(
                                     text: student.semester.toString(),
                                   ),
@@ -683,7 +709,7 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                               const SizedBox(width: 12),
                               Expanded(
                                 child: _buildProfileField(
-                                  'Department',
+                                  AppLocalizations.of(context).department,
                                   _departmentController,
                                   Icons.business,
                                   enabled: false,
@@ -705,7 +731,7 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Academic Performance',
+                            AppLocalizations.of(context).academicPerformance,
                             style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(fontWeight: FontWeight.bold),
                           ),
@@ -714,7 +740,9 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                             children: [
                               Expanded(
                                 child: _buildStatCard(
-                                  'Overall Attendance',
+                                  AppLocalizations.of(
+                                    context,
+                                  ).overallAttendance,
                                   '85%',
                                   Icons.check_circle,
                                   Colors.green,
@@ -723,7 +751,7 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                               const SizedBox(width: 12),
                               Expanded(
                                 child: _buildStatCard(
-                                  'Current CGPA',
+                                  AppLocalizations.of(context).currentCgpa,
                                   '8.5',
                                   Icons.star,
                                   Colors.orange,
@@ -736,7 +764,7 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                             children: [
                               Expanded(
                                 child: _buildStatCard(
-                                  'Subjects',
+                                  AppLocalizations.of(context).subjects,
                                   '6',
                                   Icons.book,
                                   Colors.blue,
@@ -745,7 +773,7 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                               const SizedBox(width: 12),
                               Expanded(
                                 child: _buildStatCard(
-                                  'Assignments',
+                                  AppLocalizations.of(context).assignments,
                                   '12',
                                   Icons.assignment,
                                   Colors.purple,
@@ -767,7 +795,7 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Quick Actions',
+                            AppLocalizations.of(context).quickActions,
                             style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(fontWeight: FontWeight.bold),
                           ),
@@ -777,9 +805,11 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                               Icons.qr_code_scanner,
                               color: Colors.green,
                             ),
-                            title: const Text('Mark Attendance'),
-                            subtitle: const Text(
-                              'Scan QR code to mark attendance',
+                            title: Text(
+                              AppLocalizations.of(context).markAttendance,
+                            ),
+                            subtitle: Text(
+                              AppLocalizations.of(context).scanQrCodeAttendance,
                             ),
                             trailing: const Icon(Icons.arrow_forward_ios),
                             onTap: () {
@@ -796,8 +826,12 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                               Icons.calendar_today,
                               color: Colors.blue,
                             ),
-                            title: const Text('View Schedule'),
-                            subtitle: const Text('Check your class schedule'),
+                            title: Text(
+                              AppLocalizations.of(context).viewSchedule,
+                            ),
+                            subtitle: Text(
+                              AppLocalizations.of(context).checkClassSchedule,
+                            ),
                             trailing: const Icon(Icons.arrow_forward_ios),
                             onTap: _viewSchedule,
                           ),
@@ -956,7 +990,7 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                     });
                   },
                   icon: const Icon(Icons.edit),
-                  label: const Text('Edit Profile'),
+                  label: Text(AppLocalizations.of(context).editProfile),
                   backgroundColor: Theme.of(context).colorScheme.primary,
                   foregroundColor: Colors.white,
                 )
@@ -974,6 +1008,7 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
     bool enabled = true,
   }) {
     final isFieldEnabled = _isEditing && enabled;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return TextFormField(
       controller: controller,
@@ -981,23 +1016,51 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
       validator: validator,
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon, color: isFieldEnabled ? null : Colors.grey[400]),
+        prefixIcon: Icon(
+          icon,
+          color: isFieldEnabled
+              ? (isDarkMode ? const Color(0xFF4CAF50) : null)
+              : (isDarkMode ? const Color(0xFF888888) : Colors.grey[400]),
+        ),
         suffixIcon: !isFieldEnabled
             ? Tooltip(
-                message: 'Tap the edit button to modify this field',
+                message: AppLocalizations.of(context).tapEditToModify,
                 child: Icon(
                   Icons.lock_outline,
                   size: 18,
-                  color: Colors.grey[400],
+                  color: isDarkMode
+                      ? const Color(0xFF888888)
+                      : Colors.grey[400],
                 ),
               )
             : null,
         border: const OutlineInputBorder(),
-        filled: !isFieldEnabled,
-        fillColor: !isFieldEnabled ? Colors.grey[50] : null,
-        labelStyle: TextStyle(color: isFieldEnabled ? null : Colors.grey[500]),
+        filled: true,
+        fillColor: isDarkMode
+            ? (isFieldEnabled
+                  ? const Color(0xFF2D2D2D)
+                  : const Color(0xFF1A1A1A))
+            : (!isFieldEnabled ? Colors.grey[50] : null),
+        labelStyle: TextStyle(
+          color: isDarkMode
+              ? (isFieldEnabled
+                    ? const Color(0xFFE8E8E8)
+                    : const Color(0xFF888888))
+              : (isFieldEnabled ? null : Colors.grey[500]),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: isDarkMode ? const Color(0xFF3A3A3A) : Colors.grey[300]!,
+          ),
+        ),
       ),
-      style: TextStyle(color: isFieldEnabled ? null : Colors.grey[600]),
+      style: TextStyle(
+        color: isDarkMode
+            ? (isFieldEnabled
+                  ? const Color(0xFFFFFFFF)
+                  : const Color(0xFFB0B0B0))
+            : (isFieldEnabled ? null : Colors.grey[600]),
+      ),
     );
   }
 
@@ -1007,12 +1070,18 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
     IconData icon,
     Color color,
   ) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: isDarkMode ? color.withOpacity(0.15) : color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
+        border: Border.all(
+          color: isDarkMode
+              ? color.withOpacity(0.4)
+              : color.withValues(alpha: 0.3),
+        ),
       ),
       child: Column(
         children: [
@@ -1028,7 +1097,10 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
           ),
           Text(
             title,
-            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+            style: TextStyle(
+              fontSize: 12,
+              color: isDarkMode ? const Color(0xFFB0B0B0) : Colors.grey[600],
+            ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -1151,8 +1223,18 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => Scaffold(
-          appBar: AppBar(title: const Text('Class Schedule')),
-          body: const Center(child: Text('Schedule view coming soon!')),
+          appBar: AppBar(
+            title: Text(AppLocalizations.of(context).schedule),
+            backgroundColor: Theme.of(context).brightness == Brightness.dark
+                ? Colors.black
+                : Theme.of(context).colorScheme.primary,
+            foregroundColor: Colors.white,
+          ),
+          body: Center(
+            child: Text(
+              '${AppLocalizations.of(context).schedule} view coming soon!',
+            ),
+          ),
         ),
       ),
     );
@@ -1162,8 +1244,18 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => Scaffold(
-          appBar: AppBar(title: const Text('Assignments')),
-          body: const Center(child: Text('Assignments view coming soon!')),
+          appBar: AppBar(
+            title: Text(AppLocalizations.of(context).assignments),
+            backgroundColor: Theme.of(context).brightness == Brightness.dark
+                ? Colors.black
+                : Theme.of(context).colorScheme.primary,
+            foregroundColor: Colors.white,
+          ),
+          body: Center(
+            child: Text(
+              '${AppLocalizations.of(context).assignments} view coming soon!',
+            ),
+          ),
         ),
       ),
     );
@@ -1173,8 +1265,18 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => Scaffold(
-          appBar: AppBar(title: const Text('Grades')),
-          body: const Center(child: Text('Grades view coming soon!')),
+          appBar: AppBar(
+            title: Text(AppLocalizations.of(context).grades),
+            backgroundColor: Theme.of(context).brightness == Brightness.dark
+                ? Colors.black
+                : Theme.of(context).colorScheme.primary,
+            foregroundColor: Colors.white,
+          ),
+          body: Center(
+            child: Text(
+              '${AppLocalizations.of(context).grades} view coming soon!',
+            ),
+          ),
         ),
       ),
     );
@@ -1256,9 +1358,9 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
               child: Icon(Icons.logout, color: Colors.red.shade600, size: 24),
             ),
             const SizedBox(width: 12),
-            const Text(
-              'Logout',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            Text(
+              AppLocalizations.of(context).logout,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
           ],
         ),
@@ -1266,9 +1368,9 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Are you sure you want to logout?',
-              style: TextStyle(fontSize: 16),
+            Text(
+              AppLocalizations.of(context).signOutAccount,
+              style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 8),
             Text(
@@ -1287,7 +1389,7 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
               ),
             ),
             child: Text(
-              'Cancel',
+              AppLocalizations.of(context).cancel,
               style: TextStyle(
                 color: Colors.grey[600],
                 fontWeight: FontWeight.w600,
@@ -1313,9 +1415,9 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
               children: [
                 const Icon(Icons.logout, size: 18),
                 const SizedBox(width: 6),
-                const Text(
-                  'Logout',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                Text(
+                  AppLocalizations.of(context).logout,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
             ),

@@ -41,12 +41,24 @@ class SmartCurriculumApp extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
+            // Avoid lerping between theme TextStyles to prevent inherit mismatches
+            themeAnimationDuration: Duration(milliseconds: 0),
+            themeAnimationCurve: Curves.linear,
             theme: ThemeData(
               colorScheme: ColorScheme.fromSeed(
                 seedColor: const Color(0xFF2E7D32),
                 brightness: Brightness.light,
               ),
-              textTheme: GoogleFonts.interTextTheme(),
+              fontFamily: GoogleFonts.inter().fontFamily,
+              // Use the same base for both light and dark to keep TextStyle inheritance consistent
+              textTheme: GoogleFonts.interTextTheme(
+                ThemeData.light().textTheme.copyWith(
+                  bodyLarge: const TextStyle(color: Colors.black87),
+                  bodyMedium: const TextStyle(color: Colors.black87),
+                  titleMedium: const TextStyle(color: Colors.black87),
+                  titleLarge: const TextStyle(color: Colors.black87),
+                ),
+              ),
               useMaterial3: true,
               appBarTheme: const AppBarTheme(
                 centerTitle: true,
@@ -71,71 +83,208 @@ class SmartCurriculumApp extends StatelessWidget {
                   ),
                 ),
               ),
+              listTileTheme: const ListTileThemeData(
+                textColor: Colors.black87,
+                iconColor: Colors.black54,
+              ),
             ),
             darkTheme: ThemeData(
               colorScheme: ColorScheme.fromSeed(
                 seedColor: const Color(0xFF2E7D32),
                 brightness: Brightness.dark,
-                background: const Color(0xFF121212), // Much darker background
-                surface: const Color(0xFF1E1E1E), // Dark card background
-                onBackground: Colors.white, // White text on background
-                onSurface: Colors.white, // White text on cards
+                surface: const Color(
+                  0xFF1A1A1A,
+                ), // Deeper card background like Netflix/Spotify
+                onSurface: const Color(0xFFE8E8E8), // Softer white text
+                primary: const Color(0xFF4CAF50), // Brighter green for accents
+                secondary: const Color(
+                  0xFF81C784,
+                ), // Lighter green for secondary elements
+                tertiary: const Color(0xFF388E3C), // Medium green for variety
+                surfaceVariant: const Color(
+                  0xFF2D2D2D,
+                ), // Slightly lighter for elevated surfaces
+                onSurfaceVariant: const Color(0xFFB0B0B0), // Muted text
+                outline: const Color(0xFF3A3A3A), // Subtle borders
               ),
-              scaffoldBackgroundColor: const Color(0xFF121212),
+              scaffoldBackgroundColor: const Color(
+                0xFF0D0D0D,
+              ), // Very dark background like premium apps
+              fontFamily: GoogleFonts.inter().fontFamily,
               textTheme: GoogleFonts.interTextTheme(
                 ThemeData.dark().textTheme.copyWith(
-                  bodyLarge: const TextStyle(color: Colors.white),
-                  bodyMedium: const TextStyle(color: Colors.white),
-                  titleMedium: const TextStyle(color: Colors.white),
-                  titleLarge: const TextStyle(color: Colors.white),
+                  displayLarge: const TextStyle(
+                    color: Color(0xFFFFFFFF),
+                    fontWeight: FontWeight.w300,
+                  ),
+                  displayMedium: const TextStyle(
+                    color: Color(0xFFFFFFFF),
+                    fontWeight: FontWeight.w400,
+                  ),
+                  displaySmall: const TextStyle(
+                    color: Color(0xFFFFFFFF),
+                    fontWeight: FontWeight.w400,
+                  ),
+                  headlineLarge: const TextStyle(
+                    color: Color(0xFFFFFFFF),
+                    fontWeight: FontWeight.w400,
+                  ),
+                  headlineMedium: const TextStyle(
+                    color: Color(0xFFFFFFFF),
+                    fontWeight: FontWeight.w400,
+                  ),
+                  headlineSmall: const TextStyle(
+                    color: Color(0xFFFFFFFF),
+                    fontWeight: FontWeight.w400,
+                  ),
+                  titleLarge: const TextStyle(
+                    color: Color(0xFFFFFFFF),
+                    fontWeight: FontWeight.w500,
+                  ),
+                  titleMedium: const TextStyle(
+                    color: Color(0xFFE8E8E8),
+                    fontWeight: FontWeight.w500,
+                  ),
+                  titleSmall: const TextStyle(
+                    color: Color(0xFFE8E8E8),
+                    fontWeight: FontWeight.w500,
+                  ),
+                  bodyLarge: const TextStyle(
+                    color: Color(0xFFE8E8E8),
+                    fontWeight: FontWeight.w400,
+                  ),
+                  bodyMedium: const TextStyle(
+                    color: Color(0xFFE8E8E8),
+                    fontWeight: FontWeight.w400,
+                  ),
+                  bodySmall: const TextStyle(
+                    color: Color(0xFFB0B0B0),
+                    fontWeight: FontWeight.w400,
+                  ),
+                  labelLarge: const TextStyle(
+                    color: Color(0xFFE8E8E8),
+                    fontWeight: FontWeight.w500,
+                  ),
+                  labelMedium: const TextStyle(
+                    color: Color(0xFFB0B0B0),
+                    fontWeight: FontWeight.w500,
+                  ),
+                  labelSmall: const TextStyle(
+                    color: Color(0xFFB0B0B0),
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
               useMaterial3: true,
               appBarTheme: AppBarTheme(
                 centerTitle: true,
                 elevation: 0,
-                backgroundColor: const Color(0xFF1B5E20),
+                backgroundColor: const Color(
+                  0xFF000000,
+                ), // Pure black for dark mode
+                surfaceTintColor: Colors.transparent,
                 foregroundColor: Colors.white,
+                shadowColor: Colors.transparent,
                 titleTextStyle: GoogleFonts.inter(
                   color: Colors.white,
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              cardTheme: const CardThemeData(
-                elevation: 2,
-                color: Color(0xFF1E1E1E), // Much darker card
+              cardTheme: CardThemeData(
+                elevation: 8,
+                shadowColor: Colors.black.withOpacity(0.3),
+                color: const Color(0xFF1A1A1A),
+                surfaceTintColor: Colors.transparent,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                  borderRadius: BorderRadius.circular(16),
+                  side: BorderSide(
+                    color: const Color(0xFF3A3A3A).withOpacity(0.3),
+                    width: 0.5,
+                  ),
                 ),
               ),
               elevatedButtonTheme: ElevatedButtonThemeData(
                 style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF4CAF50),
+                  foregroundColor: Colors.white,
+                  elevation: 4,
+                  shadowColor: Colors.black.withOpacity(0.3),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 32,
                     vertical: 16,
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),
               // Improve text contrast in dark mode
               textButtonTheme: TextButtonThemeData(
-                style: TextButton.styleFrom(foregroundColor: Colors.white),
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xFF4CAF50),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                ),
               ),
               listTileTheme: const ListTileThemeData(
-                textColor: Colors.white,
-                iconColor: Colors.white70,
-                titleTextStyle: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
+                textColor: Color(0xFFE8E8E8),
+                iconColor: Color(0xFFB0B0B0),
+                selectedTileColor: Color(0xFF2D2D2D),
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 4,
                 ),
-                subtitleTextStyle: TextStyle(
-                  color: Colors.white70,
+              ),
+              switchTheme: SwitchThemeData(
+                thumbColor: MaterialStateProperty.resolveWith((states) {
+                  if (states.contains(MaterialState.selected)) {
+                    return const Color(0xFF4CAF50);
+                  }
+                  return const Color(0xFF666666);
+                }),
+                trackColor: MaterialStateProperty.resolveWith((states) {
+                  if (states.contains(MaterialState.selected)) {
+                    return const Color(0xFF4CAF50).withOpacity(0.3);
+                  }
+                  return const Color(0xFF3A3A3A);
+                }),
+              ),
+              dividerTheme: const DividerThemeData(
+                color: Color(0xFF3A3A3A),
+                thickness: 0.5,
+              ),
+              inputDecorationTheme: InputDecorationTheme(
+                filled: true,
+                fillColor: const Color(0xFF2D2D2D),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: Color(0xFF3A3A3A)),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: Color(0xFF3A3A3A)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(
+                    color: Color(0xFF4CAF50),
+                    width: 2,
+                  ),
+                ),
+                labelStyle: const TextStyle(
+                  color: Color(0xFFE8E8E8),
                   fontSize: 14,
-                ),
+                ), // Brighter label text
+                hintStyle: const TextStyle(
+                  color: Color(0xFFB0B0B0),
+                ), // Softer hint text
+                // Style for input text
+                floatingLabelStyle: const TextStyle(
+                  color: Color(0xFF4CAF50),
+                ), // Green when focused
               ),
             ),
             home: const AppWrapper(),

@@ -17,6 +17,17 @@ class AppLocalizations {
       'select_language': 'Select Language',
       'english': 'English',
       'hindi': 'हिंदी',
+      'welcome': 'Welcome',
+      'dashboard': 'Dashboard',
+      'quick_actions': 'Quick Actions',
+      'academic_performance': 'Academic Performance',
+      'overall_attendance': 'Overall Attendance',
+      'current_cgpa': 'Current CGPA',
+      'subjects': 'Subjects',
+      'mark_attendance': 'Mark Attendance',
+      'scan_qr_code_attendance': 'Scan QR code to mark attendance',
+      'view_schedule': 'View Schedule',
+      'check_class_schedule': 'Check your class schedule',
 
       // Profile Screen
       'student_profile': 'Student Profile',
@@ -52,6 +63,15 @@ class AppLocalizations {
       'schedule': 'Schedule',
       'attendance': 'Attendance',
       'profile': 'Profile',
+
+      // Common Actions
+      'cancel': 'Cancel',
+      'confirm': 'Confirm',
+      'edit': 'Edit',
+      'done': 'Done',
+      'loading': 'Loading...',
+      'error': 'Error',
+      'success': 'Success',
     },
     'hi': {
       // Common
@@ -59,6 +79,18 @@ class AppLocalizations {
       'select_language': 'भाषा चुनें',
       'english': 'English',
       'hindi': 'हिंदी',
+      'welcome': 'स्वागत',
+      'dashboard': 'डैशबोर्ड',
+      'quick_actions': 'त्वरित कार्य',
+      'academic_performance': 'शैक्षणिक प्रदर्शन',
+      'overall_attendance': 'कुल उपस्थिति',
+      'current_cgpa': 'वर्तमान CGPA',
+      'subjects': 'विषय',
+      'mark_attendance': 'उपस्थिति चिह्नित करें',
+      'scan_qr_code_attendance':
+          'उपस्थिति चिह्नित करने के लिए QR कोड स्कैन करें',
+      'view_schedule': 'शेड्यूल देखें',
+      'check_class_schedule': 'अपना क्लास शेड्यूल जांचें',
 
       // Profile Screen
       'student_profile': 'छात्र प्रोफ़ाइल',
@@ -94,6 +126,15 @@ class AppLocalizations {
       'schedule': 'शेड्यूल',
       'attendance': 'उपस्थिति',
       'profile': 'प्रोफ़ाइल',
+
+      // Common Actions
+      'cancel': 'रद्द करें',
+      'confirm': 'पुष्टि करें',
+      'edit': 'संपादित करें',
+      'done': 'पूर्ण',
+      'loading': 'लोड हो रहा है...',
+      'error': 'त्रुटि',
+      'success': 'सफलता',
     },
   };
 
@@ -131,6 +172,24 @@ class AppLocalizations {
   String get schedule => translate('schedule');
   String get attendance => translate('attendance');
   String get profile => translate('profile');
+  String get welcome => translate('welcome');
+  String get dashboard => translate('dashboard');
+  String get quickActions => translate('quick_actions');
+  String get academicPerformance => translate('academic_performance');
+  String get overallAttendance => translate('overall_attendance');
+  String get currentCgpa => translate('current_cgpa');
+  String get subjects => translate('subjects');
+  String get markAttendance => translate('mark_attendance');
+  String get scanQrCodeAttendance => translate('scan_qr_code_attendance');
+  String get viewSchedule => translate('view_schedule');
+  String get checkClassSchedule => translate('check_class_schedule');
+  String get cancel => translate('cancel');
+  String get confirm => translate('confirm');
+  String get edit => translate('edit');
+  String get done => translate('done');
+  String get loading => translate('loading');
+  String get error => translate('error');
+  String get success => translate('success');
 }
 
 class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

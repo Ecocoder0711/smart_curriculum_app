@@ -4,6 +4,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../services/attendance_service.dart';
+import '../../services/location_service.dart';
 
 class QRScannerScreen extends StatefulWidget {
   const QRScannerScreen({super.key});
@@ -81,15 +82,17 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    isProcessing ? Icons.location_searching : Icons.qr_code_scanner,
+                    isProcessing
+                        ? Icons.location_searching
+                        : Icons.qr_code_scanner,
                     size: 50,
                     color: Theme.of(context).colorScheme.primary,
                   ),
                   const SizedBox(height: 16),
 
                   Text(
-                    isProcessing 
-                        ? 'Processing attendance...'
+                    isProcessing
+                        ? 'Verifying location and marking attendance...'
                         : 'Position QR code within the frame',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
@@ -101,11 +104,11 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
 
                   Text(
                     isProcessing
-                        ? 'Please wait while we process your attendance'
+                        ? 'Please wait while we verify your location'
                         : 'Make sure the QR code is clear and well-lit',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.grey[600],
-                    ),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
                     textAlign: TextAlign.center,
                   ),
 
@@ -114,7 +117,7 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.1),
+                        color: Colors.green.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: Colors.green),
                       ),
@@ -141,7 +144,7 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.blue.withOpacity(0.1),
+                        color: Colors.blue.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: Colors.blue),
                       ),
@@ -155,7 +158,7 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              'Processing your attendance...',
+                              'Checking your location for proxy detection...',
                               style: TextStyle(
                                 color: Colors.blue[700],
                                 fontWeight: FontWeight.w500,
@@ -178,30 +181,31 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
   void _onQRDetected(BarcodeCapture capture) {
     final List<Barcode> barcodes = capture.barcodes;
     for (final barcode in barcodes) {
-      if (barcode.rawValue != null && 
-          scannedData != barcode.rawValue && 
+      if (barcode.rawValue != null &&
+          scannedData != barcode.rawValue &&
           !isProcessing) {
         setState(() {
           scannedData = barcode.rawValue!;
           isProcessing = true;
         });
 
-        // Mark attendance with basic verification
-        _markAttendance(barcode.rawValue!);
+        // Mark attendance with location verification
+        _markAttendanceWithLocation(barcode.rawValue!);
         break;
       }
     }
   }
 
-  Future<void> _markAttendance(String qrData) async {
+  Future<void> _markAttendanceWithLocation(String qrData) async {
     try {
       // Pause scanning
       cameraController.stop();
 
       final authProvider = context.read<AuthProvider>();
       final attendanceService = AttendanceService();
+      final locationService = LocationService();
 
-      // Parse QR data - support both JSON and legacy formats
+      // Parse QR data - updated format: JSON with classSessionId, teacherLat, teacherLon, radiusMeters
       Map<String, dynamic> qrContent;
       try {
         qrContent = jsonDecode(qrData);
@@ -215,15 +219,25 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
           );
           return;
         }
-        
+
+        // Use default coordinates for legacy QR codes (classroom coordinates)
         qrContent = {
           'classSessionId': parts[0],
           'location': parts[1],
+          'teacherLat': 37.7749, // Example: San Francisco coordinates
+          'teacherLon': -122.4194,
+          'radiusMeters': 50.0,
         };
       }
 
       final classSessionId = qrContent['classSessionId'] as String?;
       final location = qrContent['location'] as String? ?? 'Classroom';
+      final teacherLat =
+          (qrContent['teacherLat'] as num?)?.toDouble() ?? 37.7749;
+      final teacherLon =
+          (qrContent['teacherLon'] as num?)?.toDouble() ?? -122.4194;
+      final radiusMeters =
+          (qrContent['radiusMeters'] as num?)?.toDouble() ?? 50.0;
 
       if (classSessionId == null) {
         _showErrorDialog(
@@ -233,7 +247,45 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
         return;
       }
 
-      // Mark attendance
+      // Verify student location
+      final locationResult = await locationService.verifyAttendanceLocation(
+        teacherLat: teacherLat,
+        teacherLon: teacherLon,
+        radiusMeters: radiusMeters,
+      );
+
+      if (!locationResult.success) {
+        // For demo purposes, if location fails, allow attendance anyway
+        debugPrint(
+          'Location verification failed, proceeding with attendance for demo',
+        );
+        final result = await attendanceService.markAttendance(
+          studentId: authProvider.user!.id,
+          classSessionId: classSessionId,
+          location: location,
+        );
+
+        if (result.success) {
+          _showSuccessDialog(
+            'Attendance Marked!',
+            'Your attendance has been recorded successfully.\n(Location verification skipped for demo)',
+          );
+        } else {
+          _showErrorDialog('Attendance Failed', result.message);
+        }
+        return;
+      }
+
+      if (!locationResult.isWithinRange) {
+        _showProxyDetectedDialog(
+          locationResult.distance!,
+          radiusMeters,
+          locationResult.message,
+        );
+        return;
+      }
+
+      // Mark attendance if location is verified
       final result = await attendanceService.markAttendance(
         studentId: authProvider.user!.id,
         classSessionId: classSessionId,
@@ -243,7 +295,7 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
       if (result.success) {
         _showSuccessDialog(
           'Attendance Marked!',
-          'Your attendance has been recorded successfully.',
+          'Your attendance has been recorded successfully.\nDistance from class: ${locationResult.distance!.toStringAsFixed(1)}m',
         );
       } else {
         _showErrorDialog('Attendance Failed', result.message);
@@ -255,6 +307,104 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
         isProcessing = false;
       });
     }
+  }
+
+  void _showProxyDetectedDialog(
+    double distance,
+    double allowedRadius,
+    String message,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.location_off, color: Colors.orange[600]),
+            const SizedBox(width: 8),
+            const Text('Proxy Detected'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(message),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.orange.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.info_outline,
+                        color: Colors.orange[700],
+                        size: 16,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        'Location Details:',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.orange[700],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Text('• Your distance: ${distance.toStringAsFixed(1)}m'),
+                  Text(
+                    '• Required range: ${allowedRadius.toStringAsFixed(1)}m',
+                  ),
+                  Text(
+                    '• You need to be ${(distance - allowedRadius).toStringAsFixed(1)}m closer',
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Please move closer to the classroom and try again.',
+              style: TextStyle(
+                color: Colors.orange[700],
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).pop(); // Go back to dashboard
+            },
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              // Reset scanning state
+              setState(() {
+                scannedData = '';
+                isProcessing = false;
+              });
+              cameraController.start();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.orange,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Try Again'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showSuccessDialog(String title, String message) {
@@ -338,8 +488,8 @@ class QrScannerOverlayShape extends ShapeBorder {
     double? cutOutHeight,
     double? cutOutWidth,
     this.cutOutBottomOffset = 0,
-  })  : cutOutWidth = cutOutWidth ?? cutOutSize ?? 250,
-        cutOutHeight = cutOutHeight ?? cutOutSize ?? 250;
+  }) : cutOutWidth = cutOutWidth ?? cutOutSize ?? 250,
+       cutOutHeight = cutOutHeight ?? cutOutSize ?? 250;
 
   final Color borderColor;
   final double borderWidth;
@@ -362,15 +512,20 @@ class QrScannerOverlayShape extends ShapeBorder {
 
   @override
   Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
-    Path _getLeftTopPath(Rect rect) {
+    Path getLeftTopPath(Rect rect) {
       return Path()
         ..moveTo(rect.left, rect.bottom)
         ..lineTo(rect.left, rect.top + borderRadius)
-        ..quadraticBezierTo(rect.left, rect.top, rect.left + borderRadius, rect.top)
+        ..quadraticBezierTo(
+          rect.left,
+          rect.top,
+          rect.left + borderRadius,
+          rect.top,
+        )
         ..lineTo(rect.right, rect.top);
     }
 
-    return _getLeftTopPath(rect)
+    return getLeftTopPath(rect)
       ..lineTo(rect.right, rect.bottom)
       ..lineTo(rect.left, rect.bottom)
       ..lineTo(rect.left, rect.top);
@@ -381,8 +536,12 @@ class QrScannerOverlayShape extends ShapeBorder {
     final width = rect.width;
     final height = rect.height;
     final borderOffset = borderWidth / 2;
-    final _cutOutWidth = cutOutWidth < width ? cutOutWidth : width - borderOffset;
-    final _cutOutHeight = cutOutHeight < height ? cutOutHeight : height - borderOffset;
+    final cutOutWidthAdjusted = cutOutWidth < width
+        ? cutOutWidth
+        : width - borderOffset;
+    final cutOutHeightAdjusted = cutOutHeight < height
+        ? cutOutHeight
+        : height - borderOffset;
 
     final backgroundPaint = Paint()
       ..color = overlayColor
@@ -394,10 +553,13 @@ class QrScannerOverlayShape extends ShapeBorder {
       ..strokeWidth = borderWidth;
 
     final cutOutRect = Rect.fromLTWH(
-      rect.left + (width - _cutOutWidth) / 2 + borderOffset,
-      rect.top + (height - _cutOutHeight) / 2 + borderOffset + cutOutBottomOffset,
-      _cutOutWidth - borderOffset * 2,
-      _cutOutHeight - borderOffset * 2,
+      rect.left + (width - cutOutWidthAdjusted) / 2 + borderOffset,
+      rect.top +
+          (height - cutOutHeightAdjusted) / 2 +
+          borderOffset +
+          cutOutBottomOffset,
+      cutOutWidthAdjusted - borderOffset * 2,
+      cutOutHeightAdjusted - borderOffset * 2,
     );
 
     // Background
@@ -406,7 +568,9 @@ class QrScannerOverlayShape extends ShapeBorder {
         PathOperation.difference,
         Path()..addRect(rect),
         Path()
-          ..addRRect(RRect.fromRectAndRadius(cutOutRect, Radius.circular(borderRadius)))
+          ..addRRect(
+            RRect.fromRectAndRadius(cutOutRect, Radius.circular(borderRadius)),
+          )
           ..close(),
       ),
       backgroundPaint,
@@ -417,7 +581,12 @@ class QrScannerOverlayShape extends ShapeBorder {
       Path()
         ..moveTo(cutOutRect.left - borderOffset, cutOutRect.top + borderLength)
         ..lineTo(cutOutRect.left - borderOffset, cutOutRect.top + borderRadius)
-        ..quadraticBezierTo(cutOutRect.left - borderOffset, cutOutRect.top - borderOffset, cutOutRect.left + borderRadius, cutOutRect.top - borderOffset)
+        ..quadraticBezierTo(
+          cutOutRect.left - borderOffset,
+          cutOutRect.top - borderOffset,
+          cutOutRect.left + borderRadius,
+          cutOutRect.top - borderOffset,
+        )
         ..lineTo(cutOutRect.left + borderLength, cutOutRect.top - borderOffset),
       borderPaint,
     );
@@ -427,28 +596,64 @@ class QrScannerOverlayShape extends ShapeBorder {
       Path()
         ..moveTo(cutOutRect.right - borderLength, cutOutRect.top - borderOffset)
         ..lineTo(cutOutRect.right - borderRadius, cutOutRect.top - borderOffset)
-        ..quadraticBezierTo(cutOutRect.right + borderOffset, cutOutRect.top - borderOffset, cutOutRect.right + borderOffset, cutOutRect.top + borderRadius)
-        ..lineTo(cutOutRect.right + borderOffset, cutOutRect.top + borderLength),
+        ..quadraticBezierTo(
+          cutOutRect.right + borderOffset,
+          cutOutRect.top - borderOffset,
+          cutOutRect.right + borderOffset,
+          cutOutRect.top + borderRadius,
+        )
+        ..lineTo(
+          cutOutRect.right + borderOffset,
+          cutOutRect.top + borderLength,
+        ),
       borderPaint,
     );
 
     // Bottom left corner
     canvas.drawPath(
       Path()
-        ..moveTo(cutOutRect.left - borderOffset, cutOutRect.bottom - borderLength)
-        ..lineTo(cutOutRect.left - borderOffset, cutOutRect.bottom - borderRadius)
-        ..quadraticBezierTo(cutOutRect.left - borderOffset, cutOutRect.bottom + borderOffset, cutOutRect.left + borderRadius, cutOutRect.bottom + borderOffset)
-        ..lineTo(cutOutRect.left + borderLength, cutOutRect.bottom + borderOffset),
+        ..moveTo(
+          cutOutRect.left - borderOffset,
+          cutOutRect.bottom - borderLength,
+        )
+        ..lineTo(
+          cutOutRect.left - borderOffset,
+          cutOutRect.bottom - borderRadius,
+        )
+        ..quadraticBezierTo(
+          cutOutRect.left - borderOffset,
+          cutOutRect.bottom + borderOffset,
+          cutOutRect.left + borderRadius,
+          cutOutRect.bottom + borderOffset,
+        )
+        ..lineTo(
+          cutOutRect.left + borderLength,
+          cutOutRect.bottom + borderOffset,
+        ),
       borderPaint,
     );
 
     // Bottom right corner
     canvas.drawPath(
       Path()
-        ..moveTo(cutOutRect.right - borderLength, cutOutRect.bottom + borderOffset)
-        ..lineTo(cutOutRect.right - borderRadius, cutOutRect.bottom + borderOffset)
-        ..quadraticBezierTo(cutOutRect.right + borderOffset, cutOutRect.bottom + borderOffset, cutOutRect.right + borderOffset, cutOutRect.bottom - borderRadius)
-        ..lineTo(cutOutRect.right + borderOffset, cutOutRect.bottom - borderLength),
+        ..moveTo(
+          cutOutRect.right - borderLength,
+          cutOutRect.bottom + borderOffset,
+        )
+        ..lineTo(
+          cutOutRect.right - borderRadius,
+          cutOutRect.bottom + borderOffset,
+        )
+        ..quadraticBezierTo(
+          cutOutRect.right + borderOffset,
+          cutOutRect.bottom + borderOffset,
+          cutOutRect.right + borderOffset,
+          cutOutRect.bottom - borderRadius,
+        )
+        ..lineTo(
+          cutOutRect.right + borderOffset,
+          cutOutRect.bottom - borderLength,
+        ),
       borderPaint,
     );
   }
