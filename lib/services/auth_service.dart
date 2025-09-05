@@ -1,262 +1,305 @@
-import 'dart:convert';
-import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-import '../models/user.dart';
-import 'demo_data_service.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../models/user.dart' as app_user;
 
-class AuthService {
-  static const String baseUrl =
-      'https://api.smartcurriculum.com'; // Replace with actual API URL
-  static const String tokenKey = 'auth_token';
-  static const String userKey = 'user_data';
-
-  // Use demo mode for development
-  static const bool _isDemoMode = true;
-  final DemoDataService _demoService = DemoDataService();
-
-  // Singleton pattern
-  static final AuthService _instance = AuthService._internal();
-  factory AuthService() => _instance;
-  AuthService._internal();
-
-  String? _token;
-  User? _currentUser;
-
-  String? get token => _token;
-  User? get currentUser => _currentUser;
-  bool get isLoggedIn => _token != null && _currentUser != null;
-
-  Future<void> loadFromStorage() async {
-    final prefs = await SharedPreferences.getInstance();
-    _token = prefs.getString(tokenKey);
-    final userData = prefs.getString(userKey);
-
-    if (userData != null) {
-      try {
-        final userJson = jsonDecode(userData);
-
-        // Properly deserialize based on user role
-        final role = userJson['role'];
-        if (role == 'teacher') {
-          _currentUser = Teacher.fromJson(userJson);
-        } else if (role == 'student') {
-          _currentUser = Student.fromJson(userJson);
-        } else {
-          _currentUser = User.fromJson(userJson);
-        }
-      } catch (e) {
-        // Clear invalid data
-        await clearStorage();
-      }
-    }
-  }
-
-  Future<void> saveToStorage() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    if (_token != null) {
-      await prefs.setString(tokenKey, _token!);
-    }
-
-    if (_currentUser != null) {
-      await prefs.setString(userKey, jsonEncode(_currentUser!.toJson()));
-    }
-  }
-
-  Future<void> clearStorage() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(tokenKey);
-    await prefs.remove(userKey);
-    _token = null;
-    _currentUser = null;
-  }
-
-  Future<AuthResult> login(String email, String password) async {
-    try {
-      debugPrint('DEBUG: AuthService login called with email: $email');
-
-      // Use demo authentication
-      if (_isDemoMode) {
-        debugPrint('DEBUG: Using demo mode authentication');
-        final user = _demoService.authenticateUser(email, password);
-        debugPrint('DEBUG: DemoService returned user: ${user?.toJson()}');
-
-        if (user != null) {
-          _token = 'demo_token_${DateTime.now().millisecondsSinceEpoch}';
-          _currentUser = user;
-          debugPrint(
-            'DEBUG: Set current user in AuthService: ${_currentUser?.toJson()}',
-          );
-
-          await saveToStorage();
-
-          return AuthResult(success: true, message: 'Login successful');
-        } else {
-          debugPrint('DEBUG: Authentication failed - user is null');
-          return AuthResult(success: false, message: 'Invalid credentials');
-        }
-      }
-
-      // Real API authentication (for production)
-      final response = await http.post(
-        Uri.parse('$baseUrl/auth/login'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': email, 'password': password}),
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        _token = data['token'];
-        _currentUser = User.fromJson(data['user']);
-
-        await saveToStorage();
-
-        return AuthResult(success: true, message: 'Login successful');
-      } else {
-        final error = jsonDecode(response.body);
-        return AuthResult(
-          success: false,
-          message: error['message'] ?? 'Login failed',
-        );
-      }
-    } catch (e) {
-      return AuthResult(success: false, message: 'Network error: $e');
-    }
-  }
-
-  Future<AuthResult> register({
-    required String name,
-    required String email,
-    required String password,
-    required UserRole role,
-    Map<String, dynamic>? additionalData,
-  }) async {
-    try {
-      // Use demo registration
-      if (_isDemoMode) {
-        // In demo mode, just return success
-        return AuthResult(
-          success: true,
-          message: 'Registration successful! You can now login.',
-        );
-      }
-
-      // Real API registration (for production)
-      final body = {
-        'name': name,
-        'email': email,
-        'password': password,
-        'role': role.toString().split('.').last,
-        ...?additionalData,
-      };
-
-      final response = await http.post(
-        Uri.parse('$baseUrl/auth/register'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(body),
-      );
-
-      if (response.statusCode == 201) {
-        final data = jsonDecode(response.body);
-        return AuthResult(
-          success: true,
-          message: data['message'] ?? 'Registration successful',
-        );
-      } else {
-        final error = jsonDecode(response.body);
-        return AuthResult(
-          success: false,
-          message: error['message'] ?? 'Registration failed',
-        );
-      }
-    } catch (e) {
-      return AuthResult(success: false, message: 'Network error: $e');
-    }
-  }
-
-  Future<void> logout() async {
-    try {
-      if (_token != null) {
-        await http.post(
-          Uri.parse('$baseUrl/auth/logout'),
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer $_token',
-          },
-        );
-      }
-    } catch (e) {
-      // Continue with logout even if API call fails
-    }
-
-    await clearStorage();
-  }
-
-  Future<AuthResult> forgotPassword(String email) async {
-    try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/auth/forgot-password'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': email}),
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return AuthResult(
-          success: true,
-          message: data['message'] ?? 'Reset email sent',
-        );
-      } else {
-        final error = jsonDecode(response.body);
-        return AuthResult(
-          success: false,
-          message: error['message'] ?? 'Failed to send reset email',
-        );
-      }
-    } catch (e) {
-      return AuthResult(success: false, message: 'Network error: $e');
-    }
-  }
-
-  Future<AuthResult> resetPassword(String token, String newPassword) async {
-    try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/auth/reset-password'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'token': token, 'password': newPassword}),
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return AuthResult(
-          success: true,
-          message: data['message'] ?? 'Password reset successful',
-        );
-      } else {
-        final error = jsonDecode(response.body);
-        return AuthResult(
-          success: false,
-          message: error['message'] ?? 'Password reset failed',
-        );
-      }
-    } catch (e) {
-      return AuthResult(success: false, message: 'Network error: $e');
-    }
-  }
-
-  Map<String, String> get authHeaders {
-    return {
-      'Content-Type': 'application/json',
-      if (_token != null) 'Authorization': 'Bearer $_token',
-    };
-  }
-}
-
+// Result classes for compatibility with existing AuthProvider
 class AuthResult {
   final bool success;
   final String message;
-  final Map<String, dynamic>? data;
+  final app_user.User? user;
 
-  AuthResult({required this.success, required this.message, this.data});
+  AuthResult({required this.success, required this.message, this.user});
+}
+
+class AuthService {
+  final firebase_auth.FirebaseAuth _auth = firebase_auth.FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  app_user.User? _currentUser;
+
+  // Get current user (compatibility method)
+  app_user.User? get currentUser => _currentUser;
+
+  // Load from storage (Firebase handles this automatically)
+  Future<void> loadFromStorage() async {
+    firebase_auth.User? firebaseUser = _auth.currentUser;
+    if (firebaseUser != null) {
+      _currentUser = await getUserData(firebaseUser.uid);
+    }
+  }
+
+  // Sign in with email and password
+  Future<AuthResult> login(String email, String password) async {
+    try {
+      firebase_auth.UserCredential result = await _auth
+          .signInWithEmailAndPassword(email: email, password: password);
+      firebase_auth.User? firebaseUser = result.user;
+
+      if (firebaseUser != null) {
+        _currentUser = await getUserData(firebaseUser.uid);
+        return AuthResult(
+          success: true,
+          message: 'Login successful',
+          user: _currentUser,
+        );
+      } else {
+        return AuthResult(success: false, message: 'Login failed');
+      }
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      String message;
+      switch (e.code) {
+        case 'user-not-found':
+          message = 'No user found with this email.';
+          break;
+        case 'wrong-password':
+          message = 'Wrong password provided.';
+          break;
+        case 'invalid-email':
+          message = 'Invalid email address.';
+          break;
+        case 'user-disabled':
+          message = 'This account has been disabled.';
+          break;
+        case 'too-many-requests':
+          message = 'Too many failed attempts. Please try again later.';
+          break;
+        default:
+          message = 'Login failed: ${e.message}';
+      }
+      return AuthResult(success: false, message: message);
+    } catch (e) {
+      return AuthResult(
+        success: false,
+        message: 'An unexpected error occurred.',
+      );
+    }
+  }
+
+  // Register with email and password
+  Future<AuthResult> register(
+    String name,
+    String email,
+    String password,
+    app_user.UserRole role,
+  ) async {
+    try {
+      firebase_auth.UserCredential result = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
+      firebase_auth.User? firebaseUser = result.user;
+
+      if (firebaseUser != null) {
+        // Update display name
+        await firebaseUser.updateDisplayName(name);
+
+        // Create user document in Firestore
+        await _createUserDocument(firebaseUser.uid, name, email, role);
+
+        // Load the created user
+        _currentUser = await getUserData(firebaseUser.uid);
+
+        return AuthResult(
+          success: true,
+          message: 'Registration successful',
+          user: _currentUser,
+        );
+      } else {
+        return AuthResult(success: false, message: 'Registration failed');
+      }
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      String message;
+      switch (e.code) {
+        case 'weak-password':
+          message = 'The password provided is too weak.';
+          break;
+        case 'email-already-in-use':
+          message = 'An account already exists for that email.';
+          break;
+        case 'invalid-email':
+          message = 'Invalid email address.';
+          break;
+        default:
+          message = 'Registration failed: ${e.message}';
+      }
+      return AuthResult(success: false, message: message);
+    } catch (e) {
+      return AuthResult(
+        success: false,
+        message: 'An unexpected error occurred.',
+      );
+    }
+  }
+
+  // Sign out (renamed from signOut for compatibility)
+  Future<void> logout() async {
+    try {
+      await _auth.signOut();
+      _currentUser = null;
+    } catch (e) {
+      throw Exception('Failed to sign out: $e');
+    }
+  }
+
+  // Clear storage (Firebase doesn't need this, but for compatibility)
+  Future<void> clearStorage() async {
+    _currentUser = null;
+  }
+
+  // Forgot password
+  Future<AuthResult> forgotPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      return AuthResult(
+        success: true,
+        message: 'Password reset email sent. Please check your inbox.',
+      );
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      String message;
+      switch (e.code) {
+        case 'user-not-found':
+          message = 'No user found with this email address.';
+          break;
+        case 'invalid-email':
+          message = 'Invalid email address.';
+          break;
+        default:
+          message = e.message ?? 'Failed to send reset email.';
+      }
+      return AuthResult(success: false, message: message);
+    } catch (e) {
+      return AuthResult(
+        success: false,
+        message: 'An unexpected error occurred.',
+      );
+    }
+  }
+
+  // Reset password (for compatibility, but Firebase handles this via email)
+  Future<AuthResult> resetPassword(String token, String newPassword) async {
+    // Firebase doesn't use tokens like this, password reset is handled via email
+    return AuthResult(
+      success: false,
+      message:
+          'Please use the password reset email sent to your email address.',
+    );
+  }
+
+  // Create user document in Firestore
+  Future<void> _createUserDocument(
+    String uid,
+    String name,
+    String email,
+    app_user.UserRole role,
+  ) async {
+    try {
+      await _firestore.collection('users').doc(uid).set({
+        'name': name,
+        'email': email,
+        'role': role.toString().split('.').last,
+        'profileImage': null,
+        'createdAt': FieldValue.serverTimestamp(),
+        'updatedAt': FieldValue.serverTimestamp(),
+        // Add default role-specific fields
+        if (role == app_user.UserRole.student) ...{
+          'rollNumber': '',
+          'className': '',
+          'section': '',
+          'semester': 1,
+          'department': '',
+        },
+        if (role == app_user.UserRole.teacher) ...{
+          'employeeId': '',
+          'department': '',
+          'subjects': <String>[],
+        },
+      });
+    } catch (e) {
+      throw Exception('Failed to create user document: $e');
+    }
+  }
+
+  // Get user data from Firestore with complete details
+  Future<app_user.User?> getUserData(String userId) async {
+    try {
+      DocumentSnapshot doc = await _firestore
+          .collection('users')
+          .doc(userId)
+          .get();
+
+      if (!doc.exists) {
+        return null;
+      }
+
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      String roleStr = data['role'] as String;
+      app_user.UserRole role = roleStr == 'student'
+          ? app_user.UserRole.student
+          : roleStr == 'teacher'
+          ? app_user.UserRole.teacher
+          : app_user.UserRole.admin;
+
+      if (role == app_user.UserRole.student) {
+        return app_user.Student(
+          id: userId,
+          name: data['name'] as String,
+          email: data['email'] as String,
+          profileImage: data['profileImage'] as String?,
+          createdAt:
+              (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+          updatedAt:
+              (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+          rollNumber: data['rollNumber'] as String? ?? '',
+          className: data['className'] as String? ?? '',
+          section: data['section'] as String? ?? '',
+          semester: data['semester'] as int? ?? 1,
+          department: data['department'] as String? ?? '',
+        );
+      } else if (role == app_user.UserRole.teacher) {
+        return app_user.Teacher(
+          id: userId,
+          name: data['name'] as String,
+          email: data['email'] as String,
+          profileImage: data['profileImage'] as String?,
+          createdAt:
+              (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+          updatedAt:
+              (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+          employeeId: data['employeeId'] as String? ?? '',
+          department: data['department'] as String? ?? '',
+          subjects: List<String>.from(data['subjects'] as List? ?? []),
+        );
+      } else {
+        return app_user.User(
+          id: userId,
+          name: data['name'] as String,
+          email: data['email'] as String,
+          role: role,
+          profileImage: data['profileImage'] as String?,
+          createdAt:
+              (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+          updatedAt:
+              (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+        );
+      }
+    } catch (e) {
+      throw Exception('Failed to get user data: $e');
+    }
+  }
+
+  // Check if user is signed in
+  bool get isSignedIn {
+    return _auth.currentUser != null;
+  }
+
+  // Auth state changes stream
+  Stream<app_user.User?> get userStream {
+    return _auth.authStateChanges().asyncMap((firebaseUser) async {
+      if (firebaseUser != null) {
+        _currentUser = await getUserData(firebaseUser.uid);
+        return _currentUser;
+      } else {
+        _currentUser = null;
+        return null;
+      }
+    });
+  }
 }

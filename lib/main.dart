@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'providers/auth_provider.dart';
 import 'providers/theme_provider.dart';
 import 'providers/language_provider.dart';
@@ -12,7 +14,11 @@ import 'screens/teacher/teacher_dashboard.dart';
 import 'screens/student/student_dashboard.dart';
 import 'models/user.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const SmartCurriculumApp());
 }
 
@@ -239,14 +245,14 @@ class SmartCurriculumApp extends StatelessWidget {
                 ),
               ),
               switchTheme: SwitchThemeData(
-                thumbColor: MaterialStateProperty.resolveWith((states) {
-                  if (states.contains(MaterialState.selected)) {
+                thumbColor: WidgetStateProperty.resolveWith((states) {
+                  if (states.contains(WidgetState.selected)) {
                     return const Color(0xFF4CAF50);
                   }
                   return const Color(0xFF666666);
                 }),
-                trackColor: MaterialStateProperty.resolveWith((states) {
-                  if (states.contains(MaterialState.selected)) {
+                trackColor: WidgetStateProperty.resolveWith((states) {
+                  if (states.contains(WidgetState.selected)) {
                     return const Color(0xFF4CAF50).withOpacity(0.3);
                   }
                   return const Color(0xFF3A3A3A);

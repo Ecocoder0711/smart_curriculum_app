@@ -64,13 +64,7 @@ class AuthProvider with ChangeNotifier {
     _clearError();
 
     try {
-      final result = await _authService.register(
-        name: name,
-        email: email,
-        password: password,
-        role: role,
-        additionalData: additionalData,
-      );
+      final result = await _authService.register(name, email, password, role);
 
       if (result.success) {
         return true;
