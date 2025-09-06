@@ -24,9 +24,7 @@ void main() {
           ChangeNotifierProvider(create: (_) => LanguageProvider()),
           ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ],
-        child: MaterialApp(
-          home: const LoginScreen(),
-        ),
+        child: MaterialApp(home: const LoginScreen()),
       ),
     );
 
@@ -50,9 +48,7 @@ void main() {
           ChangeNotifierProvider(create: (_) => LanguageProvider()),
           ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ],
-        child: MaterialApp(
-          home: const LoginScreen(),
-        ),
+        child: MaterialApp(home: const LoginScreen()),
       ),
     );
 
@@ -78,9 +74,7 @@ void main() {
           ChangeNotifierProvider(create: (_) => LanguageProvider()),
           ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ],
-        child: MaterialApp(
-          home: const LoginScreen(),
-        ),
+        child: MaterialApp(home: const LoginScreen()),
       ),
     );
 
@@ -89,7 +83,7 @@ void main() {
     // Verify that the app has proper material design elements
     expect(find.byType(MaterialApp), findsOneWidget);
     expect(find.byType(Scaffold), findsOneWidget);
-    
+
     // Check for key UI components
     expect(find.byType(TextFormField), findsWidgets);
     expect(find.byType(ElevatedButton), findsWidgets);
@@ -104,9 +98,7 @@ void main() {
           ChangeNotifierProvider(create: (_) => LanguageProvider()),
           ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ],
-        child: MaterialApp(
-          home: const LoginScreen(),
-        ),
+        child: MaterialApp(home: const LoginScreen()),
       ),
     );
 
@@ -116,9 +108,15 @@ void main() {
     expect(find.byType(Scaffold), findsOneWidget);
     expect(find.byType(Container), findsWidgets);
     expect(find.byType(Column), findsWidgets);
-    
+
     // Check for interactive elements
-    expect(find.byType(TextFormField), findsAtLeastNWidgets(2)); // Email and Password
-    expect(find.byType(ElevatedButton), findsAtLeastNWidgets(1)); // Login button
+    expect(
+      find.byType(TextFormField),
+      findsAtLeastNWidgets(2),
+    ); // Email and Password
+    expect(
+      find.byType(ElevatedButton),
+      findsAtLeastNWidgets(1),
+    ); // Login button
   });
 }

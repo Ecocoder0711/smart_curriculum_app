@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 // 🎯 SMART INDIA HACKATHON STRATEGY:
 // These imports are commented for strategic reasons:
 // import 'package:camera/camera.dart';           // ~15MB app size + complex setup
-// import 'package:google_ml_kit/google_ml_kit.dart';  // ~25MB + requires model downloads  
+// import 'package:google_ml_kit/google_ml_kit.dart';  // ~25MB + requires model downloads
 // import 'package:tflite_flutter/tflite_flutter.dart'; // ~20MB + custom model training
 
 // ✅ BETTER APPROACH FOR HACKATHON:
