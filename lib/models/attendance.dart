@@ -9,6 +9,8 @@ class Attendance {
   final String? remarks;
   final String? location;
   final bool markedByTeacher;
+  final bool isProxy;
+  final Map<String, double>? locationCoordinates;
 
   Attendance({
     required this.id,
@@ -19,6 +21,8 @@ class Attendance {
     this.remarks,
     this.location,
     required this.markedByTeacher,
+    this.isProxy = false,
+    this.locationCoordinates,
   });
 
   factory Attendance.fromJson(Map<String, dynamic> json) {
@@ -33,6 +37,10 @@ class Attendance {
       remarks: json['remarks'],
       location: json['location'],
       markedByTeacher: json['markedByTeacher'],
+      isProxy: json['isProxy'] ?? false,
+      locationCoordinates: json['locationCoordinates'] != null
+          ? Map<String, double>.from(json['locationCoordinates'])
+          : null,
     );
   }
 
@@ -46,6 +54,8 @@ class Attendance {
       'remarks': remarks,
       'location': location,
       'markedByTeacher': markedByTeacher,
+      'isProxy': isProxy,
+      'locationCoordinates': locationCoordinates,
     };
   }
 
@@ -58,6 +68,8 @@ class Attendance {
     String? remarks,
     String? location,
     bool? markedByTeacher,
+    bool? isProxy,
+    Map<String, double>? locationCoordinates,
   }) {
     return Attendance(
       id: id ?? this.id,
@@ -68,6 +80,8 @@ class Attendance {
       remarks: remarks ?? this.remarks,
       location: location ?? this.location,
       markedByTeacher: markedByTeacher ?? this.markedByTeacher,
+      isProxy: isProxy ?? this.isProxy,
+      locationCoordinates: locationCoordinates ?? this.locationCoordinates,
     );
   }
 }

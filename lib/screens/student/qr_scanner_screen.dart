@@ -254,6 +254,20 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
         radiusMeters: radiusMeters,
       );
 
+      double? studentLat;
+      double? studentLon;
+
+      // Get student coordinates for enhanced proxy detection
+      try {
+        final locationResult = await locationService.getCurrentLocation();
+        if (locationResult.success) {
+          studentLat = locationResult.latitude;
+          studentLon = locationResult.longitude;
+        }
+      } catch (e) {
+        debugPrint('Could not get precise location: $e');
+      }
+
       if (!locationResult.success) {
         // For demo purposes, if location fails, allow attendance anyway
         debugPrint(
@@ -263,13 +277,23 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
           studentId: authProvider.user!.id,
           classSessionId: classSessionId,
           location: location,
+          studentLat: studentLat,
+          studentLon: studentLon,
         );
 
         if (result.success) {
-          _showSuccessDialog(
-            'Attendance Marked!',
-            'Your attendance has been recorded successfully.\n(Location verification skipped for demo)',
-          );
+          if (result.isProxy) {
+            _showProxyDetectedDialog(
+              locationResult.distance ?? 999.0,
+              radiusMeters,
+              result.message,
+            );
+          } else {
+            _showSuccessDialog(
+              'Attendance Marked!',
+              'Your attendance has been recorded successfully.\n(Location verification skipped for demo)',
+            );
+          }
         } else {
           _showErrorDialog('Attendance Failed', result.message);
         }
@@ -277,10 +301,19 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
       }
 
       if (!locationResult.isWithinRange) {
+        // Still mark attendance but flag as proxy
+        final result = await attendanceService.markAttendance(
+          studentId: authProvider.user!.id,
+          classSessionId: classSessionId,
+          location: location,
+          studentLat: studentLat,
+          studentLon: studentLon,
+        );
+
         _showProxyDetectedDialog(
           locationResult.distance!,
           radiusMeters,
-          locationResult.message,
+          result.message,
         );
         return;
       }
@@ -290,12 +323,20 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
         studentId: authProvider.user!.id,
         classSessionId: classSessionId,
         location: location,
+        studentLat: studentLat,
+        studentLon: studentLon,
       );
 
-      if (result.success) {
+      if (result.success && !result.isProxy) {
         _showSuccessDialog(
           'Attendance Marked!',
           'Your attendance has been recorded successfully.\nDistance from class: ${locationResult.distance!.toStringAsFixed(1)}m',
+        );
+      } else if (result.isProxy) {
+        _showProxyDetectedDialog(
+          locationResult.distance!,
+          radiusMeters,
+          result.message,
         );
       } else {
         _showErrorDialog('Attendance Failed', result.message);

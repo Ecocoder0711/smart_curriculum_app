@@ -5,7 +5,7 @@ import 'lib/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -13,16 +13,15 @@ void main() async {
     print('✅ Firebase initialized successfully!');
     print('📋 Project ID: ${Firebase.app().options.projectId}');
     print('🔑 API Key: ${Firebase.app().options.apiKey.substring(0, 10)}...');
-    
+
     // Test Firebase Auth
     FirebaseAuth auth = FirebaseAuth.instance;
     print('🔐 Firebase Auth instance created successfully!');
     print('👤 Current user: ${auth.currentUser?.email ?? 'No user signed in'}');
-    
   } catch (e) {
     print('❌ Firebase initialization failed: $e');
   }
-  
+
   runApp(const FirebaseTestApp());
 }
 
@@ -42,11 +41,7 @@ class FirebaseTestApp extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.check_circle,
-                color: Colors.green,
-                size: 100,
-              ),
+              Icon(Icons.check_circle, color: Colors.green, size: 100),
               SizedBox(height: 20),
               Text(
                 'Firebase Connected!',
