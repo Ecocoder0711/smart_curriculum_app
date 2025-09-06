@@ -1,9 +1,13 @@
 import 'dart:convert';
+import 'dart:math';
 import '../models/attendance.dart';
 import 'demo_data_service.dart';
+import 'teacher_notification_service.dart';
 
 class AttendanceService {
   final DemoDataService _demoService = DemoDataService();
+  final TeacherNotificationService _notificationService =
+      TeacherNotificationService();
 
   // Singleton pattern
   static final AttendanceService _instance = AttendanceService._internal();
@@ -14,18 +18,19 @@ class AttendanceService {
     required String studentId,
     required String classSessionId,
     required String location,
+    double? studentLat,
+    double? studentLon,
   }) async {
     try {
       // Simulate network delay
       await Future.delayed(const Duration(seconds: 1));
 
       // Check if the class session exists and is active
-      final isValidSession = await _validateClassSession(classSessionId);
-      if (!isValidSession) {
+      final sessionValidation = await _validateClassSession(classSessionId);
+      if (!sessionValidation['isValid']) {
         return AttendanceResult(
           success: false,
-          message:
-              'Invalid or expired class session. Please check with your teacher.',
+          message: sessionValidation['message'],
         );
       }
 
@@ -42,24 +47,54 @@ class AttendanceService {
         );
       }
 
+      // Enhanced Proxy Detection with 15-meter proximity check
+      AttendanceStatus status = AttendanceStatus.present;
+      String statusMessage = 'Attendance marked successfully!';
+      bool isProxy = false;
+
+      if (studentLat != null && studentLon != null) {
+        final proxyCheck = await _checkProximityToTeacher(
+          classSessionId: classSessionId,
+          studentLat: studentLat,
+          studentLon: studentLon,
+        );
+
+        if (proxyCheck['isProxy']) {
+          status = AttendanceStatus.absent; // Mark as absent for proxy
+          statusMessage =
+              'PROXY DETECTED: You are not within classroom proximity (15m). Attendance marked as proxy.';
+          isProxy = true;
+
+          // Send immediate notification to teacher
+          await _notifyTeacherOfProxy(
+            classSessionId: classSessionId,
+            studentId: studentId,
+            studentLocation: location,
+            distance: proxyCheck['distance'],
+          );
+        }
+      }
+
       // Create new attendance record
       final attendance = Attendance(
         id: 'attendance_${DateTime.now().millisecondsSinceEpoch}',
         studentId: studentId,
         classSessionId: classSessionId,
-        status: AttendanceStatus.present,
+        status: status,
         timestamp: DateTime.now(),
         location: location,
         markedByTeacher: false,
+        isProxy: isProxy,
+        locationCoordinates: studentLat != null && studentLon != null
+            ? {'lat': studentLat, 'lon': studentLon}
+            : null,
       );
 
-      // In a real app, this would save to a database
-      // For demo, we'll just return success
-
       return AttendanceResult(
-        success: true,
-        message: 'Attendance marked successfully!',
+        success: !isProxy,
+        message: statusMessage,
         attendance: attendance,
+        isProxy: isProxy,
       );
     } catch (e) {
       return AttendanceResult(
@@ -69,9 +104,132 @@ class AttendanceService {
     }
   }
 
-  Future<bool> _validateClassSession(String classSessionId) async {
+  Future<Map<String, dynamic>> _validateClassSession(
+    String classSessionId,
+  ) async {
     // In demo mode, accept any session that starts with 'session_'
-    return classSessionId.startsWith('session_');
+    if (classSessionId.startsWith('session_')) {
+      return {'isValid': true, 'message': 'Valid session'};
+    }
+    return {
+      'isValid': false,
+      'message':
+          'Invalid or expired class session. Please check with your teacher.',
+    };
+  }
+
+  Future<Map<String, dynamic>> _checkProximityToTeacher({
+    required String classSessionId,
+    required double studentLat,
+    required double studentLon,
+  }) async {
+    // Get teacher's location for this class session
+    final teacherLocation = await _getTeacherLocationForSession(classSessionId);
+
+    if (teacherLocation == null) {
+      // If no teacher location found, allow attendance (fallback)
+      return {'isProxy': false, 'distance': 0.0};
+    }
+
+    final distance = _calculateDistance(
+      studentLat,
+      studentLon,
+      teacherLocation['lat']!,
+      teacherLocation['lon']!,
+    );
+
+    // 15-meter proximity requirement as specified by user
+    const double proximityRequirement = 15.0;
+
+    return {
+      'isProxy': distance > proximityRequirement,
+      'distance': distance,
+      'teacherLocation': teacherLocation,
+    };
+  }
+
+  Future<Map<String, double>?> _getTeacherLocationForSession(
+    String classSessionId,
+  ) async {
+    // In demo mode, simulate teacher location
+    // In real app, this would fetch from database
+    return {
+      'lat': 28.6139, // Example: Delhi coordinates
+      'lon': 77.2090,
+    };
+  }
+
+  double _calculateDistance(
+    double lat1,
+    double lon1,
+    double lat2,
+    double lon2,
+  ) {
+    const double earthRadius = 6371000; // Earth radius in meters
+
+    final double dLat = _toRadians(lat2 - lat1);
+    final double dLon = _toRadians(lon2 - lon1);
+
+    final double a =
+        sin(dLat / 2) * sin(dLat / 2) +
+        cos(_toRadians(lat1)) *
+            cos(_toRadians(lat2)) *
+            sin(dLon / 2) *
+            sin(dLon / 2);
+
+    final double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+
+    return earthRadius * c;
+  }
+
+  double _toRadians(double degrees) {
+    return degrees * (pi / 180);
+  }
+
+  Future<void> _notifyTeacherOfProxy({
+    required String classSessionId,
+    required String studentId,
+    required String studentLocation,
+    required double distance,
+  }) async {
+    // Get student details for notification
+    final studentDetails = await _getStudentDetails(studentId);
+
+    // Get teacher ID for this class session
+    final teacherId = await _getTeacherForSession(classSessionId);
+
+    // Send comprehensive notification using the notification service
+    await _notificationService.sendProxyDetectionAlert(
+      teacherId: teacherId,
+      classSessionId: classSessionId,
+      studentId: studentId,
+      studentName: studentDetails['name'] ?? 'Unknown Student',
+      studentRollNumber: studentDetails['rollNumber'] ?? 'N/A',
+      studentEmail: studentDetails['email'] ?? 'N/A',
+      distanceFromClassroom: distance,
+      attemptedLocation: studentLocation,
+    );
+
+    // Legacy logging for debugging
+    print(
+      '🚨 PROXY ALERT: ${studentDetails['name']} attempted proxy attendance',
+    );
+    print('Distance: ${distance.toStringAsFixed(2)}m from classroom');
+  }
+
+  Future<Map<String, String>> _getStudentDetails(String studentId) async {
+    // In demo mode, return sample student data
+    return {
+      'name': 'Demo Student',
+      'rollNumber': 'CS2024001',
+      'email': 'student@example.com',
+    };
+  }
+
+  Future<String> _getTeacherForSession(String classSessionId) async {
+    // In demo mode, return sample teacher ID
+    // In real app, this would fetch from database based on class session
+    return 'teacher_demo_123';
   }
 
   Future<Attendance?> _getExistingAttendance(
@@ -141,10 +299,12 @@ class AttendanceResult {
   final bool success;
   final String message;
   final Attendance? attendance;
+  final bool isProxy;
 
   AttendanceResult({
     required this.success,
     required this.message,
     this.attendance,
+    this.isProxy = false,
   });
 }
