@@ -1579,58 +1579,77 @@ void _showFaceRecognitionDialog(BuildContext context) {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Row(
+      title: Row(
         children: [
-          Icon(Icons.face, color: Colors.blue),
-          SizedBox(width: 8),
-          Text('Face Recognition Attendance'),
+          const Icon(Icons.face, color: Colors.blue),
+          const SizedBox(width: 8),
+          Expanded(
+            child: const Text(
+              'Face Recognition Attendance',
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ],
       ),
-      content: const Column(
+      content: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Enable contactless attendance using facial recognition.'),
-          SizedBox(height: 16),
-          Text(
+          const Text(
+            'Enable contactless attendance using facial recognition.',
+            style: TextStyle(fontSize: 14),
+          ),
+          const SizedBox(height: 16),
+          const Text(
             '🔹 99.2% accuracy\n🔹 Instant recognition\n🔹 Anti-spoofing protection',
             style: TextStyle(fontSize: 14),
           ),
         ],
       ),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => Scaffold(
-                  appBar: AppBar(
-                    title: const Text('Face Recognition'),
-                    backgroundColor: Colors.blue,
-                    foregroundColor: Colors.white,
-                  ),
-                  body: FacialRecognitionCamera(
-                    classSessionId: 'demo_session_123',
-                    onAttendanceMarked: (result) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(result.message),
-                          backgroundColor: result.success
-                              ? Colors.green
-                              : Colors.red,
-                        ),
-                      );
-                    },
-                  ),
-                ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Expanded(
+              child: TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
               ),
-            );
-          },
-          child: const Text('Try Now'),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => Scaffold(
+                        appBar: AppBar(
+                          title: const Text('Face Recognition'),
+                          backgroundColor: Colors.blue,
+                          foregroundColor: Colors.white,
+                        ),
+                        body: FacialRecognitionCamera(
+                          classSessionId: 'demo_session_123',
+                          onAttendanceMarked: (result) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(result.message),
+                                backgroundColor: result.success
+                                    ? Colors.green
+                                    : Colors.red,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                child: const Text('Try Now'),
+              ),
+            ),
+          ],
         ),
       ],
     ),

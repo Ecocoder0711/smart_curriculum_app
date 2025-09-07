@@ -481,61 +481,82 @@ class _FacialRecognitionCameraState extends State<FacialRecognitionCamera>
       );
     }
 
-    return Stack(
-      children: [
-        // Mock Camera Preview - In production use CameraPreview
-        Positioned.fill(
-          child: Container(
-            color: Colors.black,
-            child: const Center(
-              child: Icon(Icons.camera_alt, size: 100, color: Colors.white30),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Stack(
+          children: [
+            // Mock Camera Preview - In production use CameraPreview
+            Positioned.fill(
+              child: Container(
+                width: constraints.maxWidth,
+                height: constraints.maxHeight,
+                color: Colors.black,
+                child: const Center(
+                  child: Icon(
+                    Icons.camera_alt,
+                    size: 100,
+                    color: Colors.white30,
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
 
-        // Face Detection Overlay
-        Positioned.fill(
-          child: CustomPaint(
-            painter: FaceOverlayPainter(
-              scanAnimation: _scanAnimation,
-              hasDetectedFace: _lastResult?.isRecognized ?? false,
-              confidence: _lastResult?.confidence ?? 0.0,
+            // Face Detection Overlay
+            Positioned.fill(
+              child: CustomPaint(
+                size: Size(constraints.maxWidth, constraints.maxHeight),
+                painter: FaceOverlayPainter(
+                  scanAnimation: _scanAnimation,
+                  hasDetectedFace: _lastResult?.isRecognized ?? false,
+                  confidence: _lastResult?.confidence ?? 0.0,
+                ),
+              ),
             ),
-          ),
-        ),
 
-        // Status Information
-        Positioned(top: 50, left: 20, right: 20, child: _buildStatusCard()),
-
-        // Recognition Result
-        if (_lastResult != null)
-          Positioned(
-            bottom: 100,
-            left: 20,
-            right: 20,
-            child: _buildResultCard(_lastResult!),
-          ),
-
-        // Manual Capture Button
-        Positioned(
-          bottom: 30,
-          left: 0,
-          right: 0,
-          child: Center(
-            child: FloatingActionButton.extended(
-              onPressed: _isProcessing ? null : _markAttendance,
-              icon: _isProcessing
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.face),
-              label: Text(_isProcessing ? 'Processing...' : 'Mark Attendance'),
+            // Status Information
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 10,
+              left: 20,
+              right: 20,
+              child: _buildStatusCard(),
             ),
-          ),
-        ),
-      ],
+
+            // Recognition Result
+            if (_lastResult != null)
+              Positioned(
+                bottom: 120,
+                left: 20,
+                right: 20,
+                child: _buildResultCard(_lastResult!),
+              ),
+
+            // Manual Capture Button
+            Positioned(
+              bottom: MediaQuery.of(context).padding.bottom + 30,
+              left: 20,
+              right: 20,
+              child: Center(
+                child: SizedBox(
+                  width: constraints.maxWidth * 0.8,
+                  child: FloatingActionButton.extended(
+                    onPressed: _isProcessing ? null : _markAttendance,
+                    icon: _isProcessing
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.face),
+                    label: Text(
+                      _isProcessing ? 'Processing...' : 'Mark Attendance',
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -582,6 +603,7 @@ class _FacialRecognitionCameraState extends State<FacialRecognitionCamera>
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Row(
               children: [
@@ -590,14 +612,17 @@ class _FacialRecognitionCameraState extends State<FacialRecognitionCamera>
                   color: Colors.white,
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  result.isRecognized
-                      ? 'Face Recognized'
-                      : 'Face Not Recognized',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                Expanded(
+                  child: Text(
+                    result.isRecognized
+                        ? 'Face Recognized'
+                        : 'Face Not Recognized',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
@@ -607,10 +632,12 @@ class _FacialRecognitionCameraState extends State<FacialRecognitionCamera>
               Text(
                 'Student: ${result.studentName}',
                 style: const TextStyle(color: Colors.white),
+                overflow: TextOverflow.ellipsis,
               ),
               Text(
                 'Confidence: ${(result.confidence * 100).toStringAsFixed(1)}%',
                 style: const TextStyle(color: Colors.white),
+                overflow: TextOverflow.ellipsis,
               ),
             ],
             if (result.spoofingDetected) ...[
@@ -621,6 +648,7 @@ class _FacialRecognitionCameraState extends State<FacialRecognitionCamera>
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ],
@@ -656,86 +684,138 @@ class FaceOverlayPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3;
 
-    // Face detection frame
+    // Face detection frame - ensure we have valid dimensions
+    if (size.width <= 0 || size.height <= 0) return;
+
     final frameColor = hasDetectedFace ? Colors.green : Colors.blue;
     paint.color = frameColor.withOpacity(0.8);
 
+    // Calculate frame size with proper boundaries
+    final frameWidth = (size.width * 0.7).clamp(100.0, size.width - 40);
+    final frameHeight = (size.height * 0.5).clamp(150.0, size.height - 80);
+
     final rect = Rect.fromCenter(
       center: Offset(size.width / 2, size.height / 2),
-      width: size.width * 0.7,
-      height: size.height * 0.5,
+      width: frameWidth,
+      height: frameHeight,
+    );
+
+    // Ensure rect is within canvas bounds
+    final clampedRect = Rect.fromLTRB(
+      rect.left.clamp(10.0, size.width - 10),
+      rect.top.clamp(10.0, size.height - 10),
+      rect.right.clamp(10.0, size.width - 10),
+      rect.bottom.clamp(10.0, size.height - 10),
     );
 
     // Draw rounded rectangle frame
-    final rrect = RRect.fromRectAndRadius(rect, const Radius.circular(20));
+    final rrect = RRect.fromRectAndRadius(
+      clampedRect,
+      const Radius.circular(20),
+    );
     canvas.drawRRect(rrect, paint);
 
-    // Scanning line animation
-    if (!hasDetectedFace) {
+    // Scanning line animation (only when not detected)
+    if (!hasDetectedFace && clampedRect.height > 0) {
       paint.color = Colors.blue.withOpacity(0.6);
       paint.strokeWidth = 2;
 
-      final scanY = rect.top + (rect.height * scanAnimation.value);
-      canvas.drawLine(
-        Offset(rect.left, scanY),
-        Offset(rect.right, scanY),
-        paint,
-      );
+      final scanY =
+          clampedRect.top + (clampedRect.height * scanAnimation.value);
+      if (scanY >= clampedRect.top && scanY <= clampedRect.bottom) {
+        canvas.drawLine(
+          Offset(clampedRect.left, scanY),
+          Offset(clampedRect.right, scanY),
+          paint,
+        );
+      }
     }
 
-    // Corner markers
+    // Corner markers with proper bounds checking
     paint.strokeWidth = 4;
     paint.color = frameColor;
 
-    final cornerLength = 30.0;
+    final cornerLength = 30.0
+        .clamp(0, clampedRect.width / 4)
+        .clamp(0, clampedRect.height / 4);
 
     // Top-left corner
     canvas.drawLine(
-      Offset(rect.left, rect.top + cornerLength),
-      Offset(rect.left, rect.top),
+      Offset(clampedRect.left, clampedRect.top + cornerLength),
+      Offset(clampedRect.left, clampedRect.top),
       paint,
     );
     canvas.drawLine(
-      Offset(rect.left, rect.top),
-      Offset(rect.left + cornerLength, rect.top),
+      Offset(clampedRect.left, clampedRect.top),
+      Offset(clampedRect.left + cornerLength, clampedRect.top),
       paint,
     );
 
     // Top-right corner
     canvas.drawLine(
-      Offset(rect.right - cornerLength, rect.top),
-      Offset(rect.right, rect.top),
+      Offset(clampedRect.right - cornerLength, clampedRect.top),
+      Offset(clampedRect.right, clampedRect.top),
       paint,
     );
     canvas.drawLine(
-      Offset(rect.right, rect.top),
-      Offset(rect.right, rect.top + cornerLength),
+      Offset(clampedRect.right, clampedRect.top),
+      Offset(clampedRect.right, clampedRect.top + cornerLength),
       paint,
     );
 
     // Bottom-left corner
     canvas.drawLine(
-      Offset(rect.left, rect.bottom - cornerLength),
-      Offset(rect.left, rect.bottom),
+      Offset(clampedRect.left, clampedRect.bottom - cornerLength),
+      Offset(clampedRect.left, clampedRect.bottom),
       paint,
     );
     canvas.drawLine(
-      Offset(rect.left, rect.bottom),
-      Offset(rect.left + cornerLength, rect.bottom),
+      Offset(clampedRect.left, clampedRect.bottom),
+      Offset(clampedRect.left + cornerLength, clampedRect.bottom),
       paint,
     );
 
     // Bottom-right corner
     canvas.drawLine(
-      Offset(rect.right - cornerLength, rect.bottom),
-      Offset(rect.right, rect.bottom),
+      Offset(clampedRect.right - cornerLength, clampedRect.bottom),
+      Offset(clampedRect.right, clampedRect.bottom),
       paint,
     );
     canvas.drawLine(
-      Offset(rect.right, rect.bottom),
-      Offset(rect.right, rect.bottom - cornerLength),
+      Offset(clampedRect.right, clampedRect.bottom),
+      Offset(clampedRect.right, clampedRect.bottom - cornerLength),
       paint,
     );
+
+    // Confidence indicator
+    if (hasDetectedFace && confidence > 0) {
+      paint.style = PaintingStyle.fill;
+      paint.color = Colors.green.withOpacity(0.8);
+
+      final confidenceText = TextPainter(
+        text: TextSpan(
+          text: '${(confidence * 100).toStringAsFixed(1)}%',
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      );
+
+      confidenceText.layout();
+
+      final textOffset = Offset(
+        clampedRect.center.dx - confidenceText.width / 2,
+        clampedRect.bottom + 10,
+      );
+
+      // Only draw if within bounds
+      if (textOffset.dy + confidenceText.height < size.height) {
+        confidenceText.paint(canvas, textOffset);
+      }
+    }
   }
 
   @override
