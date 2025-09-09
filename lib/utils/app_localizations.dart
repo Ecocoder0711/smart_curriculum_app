@@ -57,6 +57,7 @@ class AppLocalizations {
       'view_pending_assignments': 'View pending assignments',
       'grades': 'Grades',
       'check_your_grades': 'Check your grades',
+      'students': 'Students',
 
       // Navigation
       'home': 'Home',
@@ -120,6 +121,7 @@ class AppLocalizations {
       'view_pending_assignments': 'लंबित असाइनमेंट देखें',
       'grades': 'ग्रेड',
       'check_your_grades': 'अपने ग्रेड जांचें',
+      'students': 'छात्र',
 
       // Navigation
       'home': 'होम',
@@ -168,6 +170,7 @@ class AppLocalizations {
   String get viewPendingAssignments => translate('view_pending_assignments');
   String get grades => translate('grades');
   String get checkYourGrades => translate('check_your_grades');
+  String get students => translate('students');
   String get home => translate('home');
   String get schedule => translate('schedule');
   String get attendance => translate('attendance');

@@ -507,41 +507,49 @@ class TeacherHomeScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.primary.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(10),
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.primary.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Icon(
+                                Icons.history_rounded,
+                                color: Theme.of(context).colorScheme.primary,
+                                size: 20,
+                              ),
                             ),
-                            child: Icon(
-                              Icons.history_rounded,
-                              color: Theme.of(context).colorScheme.primary,
-                              size: 20,
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                'Recent Activities',
+                                style: Theme.of(context).textTheme.titleLarge
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color:
+                                          Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.white
+                                          : Theme.of(
+                                              context,
+                                            ).colorScheme.onSurface,
+                                    ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            'Recent Activities',
-                            style: Theme.of(context).textTheme.titleLarge
-                                ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color:
-                                      Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? Colors.white
-                                      : Theme.of(context).colorScheme.onSurface,
-                                ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
+                      const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
+                          horizontal: 12,
+                          vertical: 6,
                         ),
                         decoration: BoxDecoration(
                           color: Theme.of(

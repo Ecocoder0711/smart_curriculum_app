@@ -58,7 +58,7 @@ class SmartCurriculumApp extends StatelessWidget {
                 surface: Colors.white,
                 onSurface: const Color(0xFF1A1A1A),
                 onPrimary: Colors.white,
-                surfaceVariant: const Color(0xFFF5F5F5),
+                surfaceContainerHighest: const Color(0xFFF5F5F5),
                 onSurfaceVariant: const Color(0xFF424242),
                 outline: const Color(0xFFE0E0E0),
               ),
@@ -100,7 +100,7 @@ class SmartCurriculumApp extends StatelessWidget {
               ),
               cardTheme: CardThemeData(
                 elevation: 3,
-                shadowColor: Colors.black.withOpacity(0.1),
+                shadowColor: Colors.black.withValues(alpha: 0.1),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
@@ -129,19 +129,17 @@ class SmartCurriculumApp extends StatelessWidget {
                 ), // Keep the same professional blue
                 brightness: Brightness.dark,
                 surface: const Color(
-                  0xFF1E1E1E,
-                ), // Professional dark surface like VS Code
+                  0xFF121212,
+                ), // Deep background like Material Design
                 onSurface: const Color(0xFFE1E1E1), // Clean white text
                 primary: const Color(0xFF2196F3), // Bright professional blue
                 secondary: const Color(0xFF03DAC6), // Modern teal accent
                 tertiary: const Color(0xFF90CAF9), // Light blue for variety
-                surfaceVariant: const Color(0xFF2D2D2D), // Elevated surfaces
+                surfaceContainerHighest: const Color(
+                  0xFF2D2D2D,
+                ), // Elevated surfaces
                 onSurfaceVariant: const Color(0xFFB8B8B8), // Muted text
                 outline: const Color(0xFF404040), // Subtle borders
-                background: const Color(
-                  0xFF121212,
-                ), // Deep background like Material Design
-                onBackground: const Color(0xFFE1E1E1),
               ),
               scaffoldBackgroundColor: const Color(
                 0xFF121212,
@@ -245,13 +243,13 @@ class SmartCurriculumApp extends StatelessWidget {
               ),
               cardTheme: CardThemeData(
                 elevation: 8,
-                shadowColor: Colors.black.withOpacity(0.4),
+                shadowColor: Colors.black.withValues(alpha: 0.4),
                 color: const Color(0xFF1E1E1E),
                 surfaceTintColor: Colors.transparent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                   side: BorderSide(
-                    color: const Color(0xFF404040).withOpacity(0.2),
+                    color: const Color(0xFF404040).withValues(alpha: 0.2),
                     width: 0.5,
                   ),
                 ),
@@ -261,7 +259,7 @@ class SmartCurriculumApp extends StatelessWidget {
                   backgroundColor: const Color(0xFF2196F3),
                   foregroundColor: Colors.white,
                   elevation: 4,
-                  shadowColor: Colors.black.withOpacity(0.3),
+                  shadowColor: Colors.black.withValues(alpha: 0.3),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 32,
                     vertical: 16,
@@ -299,7 +297,7 @@ class SmartCurriculumApp extends StatelessWidget {
                 }),
                 trackColor: WidgetStateProperty.resolveWith((states) {
                   if (states.contains(WidgetState.selected)) {
-                    return const Color(0xFF4CAF50).withOpacity(0.3);
+                    return const Color(0xFF4CAF50).withValues(alpha: 0.3);
                   }
                   return const Color(0xFF3A3A3A);
                 }),
