@@ -51,7 +51,9 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
           },
           backgroundColor: Theme.of(context).colorScheme.surface,
           selectedItemColor: Theme.of(context).colorScheme.primary,
-          unselectedItemColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+          unselectedItemColor: Theme.of(
+            context,
+          ).colorScheme.onSurface.withOpacity(0.6),
           selectedFontSize: 12,
           unselectedFontSize: 11,
           selectedLabelStyle: const TextStyle(
@@ -220,7 +222,9 @@ class TeacherHomeScreen extends StatelessWidget {
                 color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.secondary.withOpacity(0.2),
                   width: 1,
                 ),
               ),
@@ -246,7 +250,9 @@ class TeacherHomeScreen extends StatelessWidget {
                 color: Theme.of(context).colorScheme.tertiary.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: Theme.of(context).colorScheme.tertiary.withOpacity(0.2),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.tertiary.withOpacity(0.2),
                   width: 1,
                 ),
               ),
@@ -313,7 +319,9 @@ class TeacherHomeScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withOpacity(0.3),
                         blurRadius: 15,
                         offset: const Offset(0, 8),
                         spreadRadius: 2,
@@ -521,7 +529,9 @@ class TeacherHomeScreen extends StatelessWidget {
                             style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).brightness == Brightness.dark
+                                  color:
+                                      Theme.of(context).brightness ==
+                                          Brightness.dark
                                       ? Colors.white
                                       : Theme.of(context).colorScheme.onSurface,
                                 ),
@@ -949,7 +959,9 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                       ),
                     ),
                     style: TextButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.primary.withOpacity(0.1),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -961,7 +973,9 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                   icon: Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
@@ -1042,7 +1056,9 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                           ),
                           child: CircleAvatar(
                             radius: 60,
-                            backgroundColor: Theme.of(context).colorScheme.surface,
+                            backgroundColor: Theme.of(
+                              context,
+                            ).colorScheme.surface,
                             child: Icon(
                               Icons.person_rounded,
                               size: 80,
@@ -1083,7 +1099,9 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                   // Personal Information Card
                   Card(
                     elevation: 4,
-                    shadowColor: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+                    shadowColor: Theme.of(
+                      context,
+                    ).colorScheme.shadow.withOpacity(0.1),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
@@ -1093,7 +1111,9 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                         gradient: LinearGradient(
                           colors: [
                             Theme.of(context).colorScheme.surface,
-                            Theme.of(context).colorScheme.surface.withOpacity(0.8),
+                            Theme.of(
+                              context,
+                            ).colorScheme.surface.withOpacity(0.8),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -1109,22 +1129,29 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                                 Container(
                                   padding: const EdgeInsets.all(8),
                                   decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary.withOpacity(0.1),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Icon(
                                     Icons.person_outline_rounded,
-                                    color: Theme.of(context).colorScheme.primary,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
                                     size: 20,
                                   ),
                                 ),
                                 const SizedBox(width: 12),
                                 Text(
                                   'Personal Information',
-                                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: Theme.of(context).colorScheme.onSurface,
-                                  ),
+                                  style: Theme.of(context).textTheme.titleLarge
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onSurface,
+                                      ),
                                 ),
                               ],
                             ),
@@ -1136,10 +1163,14 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                                   vertical: 4,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.primary.withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(8),
                                   border: Border.all(
-                                    color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary.withOpacity(0.3),
                                   ),
                                 ),
                                 child: Row(
@@ -1148,14 +1179,18 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                                     Icon(
                                       Icons.edit_rounded,
                                       size: 14,
-                                      color: Theme.of(context).colorScheme.primary,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.primary,
                                     ),
                                     const SizedBox(width: 6),
                                     Text(
                                       'Tap edit to modify fields',
                                       style: TextStyle(
                                         fontSize: 12,
-                                        color: Theme.of(context).colorScheme.primary,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
@@ -1237,8 +1272,10 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                             Text(
                               'No subjects assigned',
                               style: TextStyle(
-                                color: Theme.of(context).brightness == Brightness.dark 
-                                    ? Colors.white70 
+                                color:
+                                    Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.white70
                                     : Colors.black87,
                               ),
                             )
@@ -1252,8 +1289,10 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                                   children: [
                                     Icon(
                                       Icons.book,
-                                      color: Theme.of(context).brightness == Brightness.dark 
-                                          ? Colors.white70 
+                                      color:
+                                          Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.white70
                                           : Colors.grey[600],
                                       size: 20,
                                     ),
@@ -1262,8 +1301,10 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                                       child: Text(
                                         subject,
                                         style: TextStyle(
-                                          color: Theme.of(context).brightness == Brightness.dark 
-                                              ? Colors.white 
+                                          color:
+                                              Theme.of(context).brightness ==
+                                                  Brightness.dark
+                                              ? Colors.white
                                               : Colors.black87,
                                         ),
                                       ),
@@ -1472,8 +1513,8 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(
-          icon, 
-          color: isFieldEnabled 
+          icon,
+          color: isFieldEnabled
               ? (isDark ? Colors.white70 : null)
               : (isDark ? Colors.grey[500] : Colors.grey[400]),
         ),
@@ -1488,14 +1529,10 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
               )
             : null,
         border: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: isDark ? Colors.white54 : Colors.grey,
-          ),
+          borderSide: BorderSide(color: isDark ? Colors.white54 : Colors.grey),
         ),
         enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: isDark ? Colors.white54 : Colors.grey,
-          ),
+          borderSide: BorderSide(color: isDark ? Colors.white54 : Colors.grey),
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
@@ -1504,17 +1541,17 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
           ),
         ),
         filled: !isFieldEnabled,
-        fillColor: !isFieldEnabled 
-            ? (isDark ? Colors.grey[800] : Colors.grey[50]) 
+        fillColor: !isFieldEnabled
+            ? (isDark ? Colors.grey[800] : Colors.grey[50])
             : null,
         labelStyle: TextStyle(
-          color: isFieldEnabled 
+          color: isFieldEnabled
               ? (isDark ? Colors.white70 : null)
               : (isDark ? Colors.grey[500] : Colors.grey[500]),
         ),
       ),
       style: TextStyle(
-        color: isFieldEnabled 
+        color: isFieldEnabled
             ? (isDark ? Colors.white : null)
             : (isDark ? Colors.grey[400] : Colors.grey[600]),
       ),
@@ -1528,7 +1565,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
     Color color,
   ) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -1551,7 +1588,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
           Text(
             title,
             style: TextStyle(
-              fontSize: 12, 
+              fontSize: 12,
               color: isDark ? Colors.white70 : Colors.grey[600],
             ),
             textAlign: TextAlign.center,
@@ -1757,9 +1794,9 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                 const SizedBox(width: 12),
                 Text(
                   'Select Language',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -1770,7 +1807,9 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.outline.withOpacity(0.2),
                     ),
                   ),
                   child: Column(
@@ -1778,16 +1817,12 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                       RadioListTile<String>(
                         title: Row(
                           children: [
-                            Text(
-                              '🇺🇸',
-                              style: TextStyle(fontSize: 20),
-                            ),
+                            Text('🇺🇸', style: TextStyle(fontSize: 20)),
                             const SizedBox(width: 12),
                             Text(
                               'English',
-                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                fontWeight: FontWeight.w500,
-                              ),
+                              style: Theme.of(context).textTheme.bodyLarge
+                                  ?.copyWith(fontWeight: FontWeight.w500),
                             ),
                           ],
                         ),
@@ -1801,7 +1836,9 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text('Language changed to English'),
-                                backgroundColor: Theme.of(context).colorScheme.primary,
+                                backgroundColor: Theme.of(
+                                  context,
+                                ).colorScheme.primary,
                                 duration: Duration(seconds: 2),
                               ),
                             );
@@ -1810,21 +1847,19 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                       ),
                       Divider(
                         height: 1,
-                        color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.outline.withOpacity(0.2),
                       ),
                       RadioListTile<String>(
                         title: Row(
                           children: [
-                            Text(
-                              '🇮🇳',
-                              style: TextStyle(fontSize: 20),
-                            ),
+                            Text('🇮🇳', style: TextStyle(fontSize: 20)),
                             const SizedBox(width: 12),
                             Text(
                               'हिंदी',
-                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                fontWeight: FontWeight.w500,
-                              ),
+                              style: Theme.of(context).textTheme.bodyLarge
+                                  ?.copyWith(fontWeight: FontWeight.w500),
                             ),
                           ],
                         ),
@@ -1838,7 +1873,9 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text('भाषा हिंदी में बदल दी गई'),
-                                backgroundColor: Theme.of(context).colorScheme.primary,
+                                backgroundColor: Theme.of(
+                                  context,
+                                ).colorScheme.primary,
                                 duration: Duration(seconds: 2),
                               ),
                             );
@@ -1852,7 +1889,9 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
@@ -1866,9 +1905,10 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                       Expanded(
                         child: Text(
                           'Language preference will be saved',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
                         ),
                       ),
                     ],
@@ -1880,7 +1920,9 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 style: TextButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                  foregroundColor: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withOpacity(0.7),
                 ),
                 child: const Text('Cancel'),
               ),

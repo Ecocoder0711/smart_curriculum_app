@@ -124,9 +124,13 @@ class SmartCurriculumApp extends StatelessWidget {
             ),
             darkTheme: ThemeData(
               colorScheme: ColorScheme.fromSeed(
-                seedColor: const Color(0xFF1976D2), // Keep the same professional blue
+                seedColor: const Color(
+                  0xFF1976D2,
+                ), // Keep the same professional blue
                 brightness: Brightness.dark,
-                surface: const Color(0xFF1E1E1E), // Professional dark surface like VS Code
+                surface: const Color(
+                  0xFF1E1E1E,
+                ), // Professional dark surface like VS Code
                 onSurface: const Color(0xFFE1E1E1), // Clean white text
                 primary: const Color(0xFF2196F3), // Bright professional blue
                 secondary: const Color(0xFF03DAC6), // Modern teal accent
@@ -134,10 +138,14 @@ class SmartCurriculumApp extends StatelessWidget {
                 surfaceVariant: const Color(0xFF2D2D2D), // Elevated surfaces
                 onSurfaceVariant: const Color(0xFFB8B8B8), // Muted text
                 outline: const Color(0xFF404040), // Subtle borders
-                background: const Color(0xFF121212), // Deep background like Material Design
+                background: const Color(
+                  0xFF121212,
+                ), // Deep background like Material Design
                 onBackground: const Color(0xFFE1E1E1),
               ),
-              scaffoldBackgroundColor: const Color(0xFF121212), // Material Design dark background
+              scaffoldBackgroundColor: const Color(
+                0xFF121212,
+              ), // Material Design dark background
               fontFamily: GoogleFonts.inter().fontFamily,
               textTheme: GoogleFonts.interTextTheme(
                 ThemeData.dark().textTheme.copyWith(
@@ -222,7 +230,9 @@ class SmartCurriculumApp extends StatelessWidget {
               appBarTheme: AppBarTheme(
                 centerTitle: true,
                 elevation: 0,
-                backgroundColor: const Color(0xFF1E1E1E), // Professional dark AppBar
+                backgroundColor: const Color(
+                  0xFF1E1E1E,
+                ), // Professional dark AppBar
                 surfaceTintColor: Colors.transparent,
                 foregroundColor: Colors.white,
                 shadowColor: Colors.transparent,

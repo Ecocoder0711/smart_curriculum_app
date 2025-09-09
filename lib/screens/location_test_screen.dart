@@ -80,15 +80,12 @@ class _LocationTestScreenState extends State<LocationTestScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
           'Location Service Test',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-          ),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
@@ -151,7 +148,9 @@ class _LocationTestScreenState extends State<LocationTestScreen> {
                       onPressed: _testAccuracy,
                       child: _accuracyTest != null
                           ? _buildAccuracyResult(_accuracyTest!)
-                          : const Text('Tap to test location accuracy (takes ~10 seconds)'),
+                          : const Text(
+                              'Tap to test location accuracy (takes ~10 seconds)',
+                            ),
                     ),
 
                     const SizedBox(height: 16),
@@ -163,13 +162,17 @@ class _LocationTestScreenState extends State<LocationTestScreen> {
                       onPressed: _mockAttendanceTest,
                       child: _mockTest != null
                           ? _buildMockTestResult(_mockTest!)
-                          : const Text('Tap to simulate attendance verification'),
+                          : const Text(
+                              'Tap to simulate attendance verification',
+                            ),
                     ),
 
                     const SizedBox(height: 24),
 
                     // Status Summary
-                    if (_serviceStatus != null && _currentPosition != null && _accuracyTest != null)
+                    if (_serviceStatus != null &&
+                        _currentPosition != null &&
+                        _accuracyTest != null)
                       _buildSummaryCard(),
                   ],
                 ),
@@ -180,9 +183,7 @@ class _LocationTestScreenState extends State<LocationTestScreen> {
             if (_isLoading)
               const Padding(
                 padding: EdgeInsets.all(16),
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
+                child: Center(child: CircularProgressIndicator()),
               ),
           ],
         ),
@@ -197,7 +198,7 @@ class _LocationTestScreenState extends State<LocationTestScreen> {
     required Widget child,
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Card(
       elevation: 2,
       color: isDark ? Colors.grey[850] : Colors.white,
@@ -209,7 +210,7 @@ class _LocationTestScreenState extends State<LocationTestScreen> {
             Row(
               children: [
                 Icon(
-                  icon, 
+                  icon,
                   color: Theme.of(context).colorScheme.primary,
                   size: 24,
                 ),
@@ -244,7 +245,7 @@ class _LocationTestScreenState extends State<LocationTestScreen> {
 
   Widget _buildStatusResult(LocationServiceStatus status) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -252,9 +253,7 @@ class _LocationTestScreenState extends State<LocationTestScreen> {
             ? Colors.green.withValues(alpha: 0.1)
             : Colors.red.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: status.isWorking ? Colors.green : Colors.red,
-        ),
+        border: Border.all(color: status.isWorking ? Colors.green : Colors.red),
       ),
       child: Row(
         children: [
@@ -267,9 +266,7 @@ class _LocationTestScreenState extends State<LocationTestScreen> {
           Expanded(
             child: Text(
               status.message,
-              style: TextStyle(
-                color: isDark ? Colors.white : Colors.black87,
-              ),
+              style: TextStyle(color: isDark ? Colors.white : Colors.black87),
             ),
           ),
         ],
@@ -279,7 +276,7 @@ class _LocationTestScreenState extends State<LocationTestScreen> {
 
   Widget _buildLocationResult(Position position) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -334,7 +331,7 @@ class _LocationTestScreenState extends State<LocationTestScreen> {
 
   Widget _buildAccuracyResult(LocationAccuracyTest test) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -396,7 +393,7 @@ class _LocationTestScreenState extends State<LocationTestScreen> {
 
   Widget _buildMockTestResult(AttendanceVerificationResult result) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -404,9 +401,7 @@ class _LocationTestScreenState extends State<LocationTestScreen> {
             ? Colors.green.withValues(alpha: 0.1)
             : Colors.red.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: result.isValid ? Colors.green : Colors.red,
-        ),
+        border: Border.all(color: result.isValid ? Colors.green : Colors.red),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -446,10 +441,11 @@ class _LocationTestScreenState extends State<LocationTestScreen> {
 
   Widget _buildSummaryCard() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final isAllGood = _serviceStatus!.isWorking && 
-                     _currentPosition != null && 
-                     (_accuracyTest?.isAccurate ?? false);
-    
+    final isAllGood =
+        _serviceStatus!.isWorking &&
+        _currentPosition != null &&
+        (_accuracyTest?.isAccurate ?? false);
+
     return Card(
       elevation: 3,
       color: isDark ? Colors.grey[850] : Colors.white,

@@ -44,8 +44,8 @@ class _QRGeneratorScreenState extends State<QRGeneratorScreen> {
         title: Text(
           'Generate QR Code',
           style: TextStyle(
-            color: Theme.of(context).brightness == Brightness.dark 
-                ? Colors.white 
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white
                 : Colors.white,
             fontWeight: FontWeight.w600,
           ),
@@ -62,28 +62,28 @@ class _QRGeneratorScreenState extends State<QRGeneratorScreen> {
             TextField(
               controller: _classSessionController,
               style: TextStyle(
-                color: Theme.of(context).brightness == Brightness.dark 
-                    ? Colors.white 
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
                     : Colors.black,
               ),
               decoration: InputDecoration(
                 labelText: 'Class Session ID',
                 labelStyle: TextStyle(
-                  color: Theme.of(context).brightness == Brightness.dark 
-                      ? Colors.white70 
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white70
                       : Colors.grey[700],
                 ),
                 border: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: Theme.of(context).brightness == Brightness.dark 
-                        ? Colors.white54 
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white54
                         : Colors.grey,
                   ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: Theme.of(context).brightness == Brightness.dark 
-                        ? Colors.white54 
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white54
                         : Colors.grey,
                   ),
                 ),
@@ -100,28 +100,28 @@ class _QRGeneratorScreenState extends State<QRGeneratorScreen> {
             TextField(
               controller: _locationController,
               style: TextStyle(
-                color: Theme.of(context).brightness == Brightness.dark 
-                    ? Colors.white 
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
                     : Colors.black,
               ),
               decoration: InputDecoration(
                 labelText: 'Location',
                 labelStyle: TextStyle(
-                  color: Theme.of(context).brightness == Brightness.dark 
-                      ? Colors.white70 
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white70
                       : Colors.grey[700],
                 ),
                 border: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: Theme.of(context).brightness == Brightness.dark 
-                        ? Colors.white54 
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white54
                         : Colors.grey,
                   ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: Theme.of(context).brightness == Brightness.dark 
-                        ? Colors.white54 
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white54
                         : Colors.grey,
                   ),
                 ),
@@ -184,12 +184,12 @@ class _QRGeneratorScreenState extends State<QRGeneratorScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Theme.of(context).brightness == Brightness.dark 
+                color: Theme.of(context).brightness == Brightness.dark
                     ? Colors.blue.withValues(alpha: 0.2)
                     : Colors.blue.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: Theme.of(context).brightness == Brightness.dark 
+                  color: Theme.of(context).brightness == Brightness.dark
                       ? Colors.blue.withValues(alpha: 0.6)
                       : Colors.blue,
                 ),
@@ -200,8 +200,8 @@ class _QRGeneratorScreenState extends State<QRGeneratorScreen> {
                   Row(
                     children: [
                       Icon(
-                        Icons.info_outline, 
-                        color: Theme.of(context).brightness == Brightness.dark 
+                        Icons.info_outline,
+                        color: Theme.of(context).brightness == Brightness.dark
                             ? Colors.blue[300]
                             : Colors.blue,
                       ),
@@ -210,7 +210,7 @@ class _QRGeneratorScreenState extends State<QRGeneratorScreen> {
                         'How it works:',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Theme.of(context).brightness == Brightness.dark 
+                          color: Theme.of(context).brightness == Brightness.dark
                               ? Colors.blue[300]
                               : Colors.blue[700],
                         ),
@@ -221,7 +221,7 @@ class _QRGeneratorScreenState extends State<QRGeneratorScreen> {
                   Text(
                     '1. Students scan this QR code with their app',
                     style: TextStyle(
-                      color: Theme.of(context).brightness == Brightness.dark 
+                      color: Theme.of(context).brightness == Brightness.dark
                           ? Colors.white
                           : Colors.black87,
                     ),
@@ -229,7 +229,7 @@ class _QRGeneratorScreenState extends State<QRGeneratorScreen> {
                   Text(
                     '2. App verifies student location (15m radius)',
                     style: TextStyle(
-                      color: Theme.of(context).brightness == Brightness.dark 
+                      color: Theme.of(context).brightness == Brightness.dark
                           ? Colors.white
                           : Colors.black87,
                     ),
@@ -237,7 +237,7 @@ class _QRGeneratorScreenState extends State<QRGeneratorScreen> {
                   Text(
                     '3. Attendance is marked automatically',
                     style: TextStyle(
-                      color: Theme.of(context).brightness == Brightness.dark 
+                      color: Theme.of(context).brightness == Brightness.dark
                           ? Colors.white
                           : Colors.black87,
                     ),
@@ -245,7 +245,7 @@ class _QRGeneratorScreenState extends State<QRGeneratorScreen> {
                   Text(
                     '4. Prevents proxy attendance',
                     style: TextStyle(
-                      color: Theme.of(context).brightness == Brightness.dark 
+                      color: Theme.of(context).brightness == Brightness.dark
                           ? Colors.white
                           : Colors.black87,
                     ),

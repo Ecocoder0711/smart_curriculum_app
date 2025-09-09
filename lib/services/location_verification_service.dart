@@ -13,7 +13,8 @@ class LocationVerificationService {
         return LocationServiceStatus(
           isEnabled: false,
           hasPermission: false,
-          message: 'Location services are disabled. Please enable them in device settings.',
+          message:
+              'Location services are disabled. Please enable them in device settings.',
         );
       }
 
@@ -25,7 +26,8 @@ class LocationVerificationService {
           return LocationServiceStatus(
             isEnabled: true,
             hasPermission: false,
-            message: 'Location permission denied. Please grant permission to mark attendance.',
+            message:
+                'Location permission denied. Please grant permission to mark attendance.',
           );
         }
       }
@@ -34,7 +36,8 @@ class LocationVerificationService {
         return LocationServiceStatus(
           isEnabled: true,
           hasPermission: false,
-          message: 'Location permission permanently denied. Please enable in app settings.',
+          message:
+              'Location permission permanently denied. Please enable in app settings.',
         );
       }
 
@@ -85,7 +88,8 @@ class LocationVerificationService {
         return AttendanceVerificationResult(
           isValid: false,
           distance: null,
-          message: 'Unable to get your current location. Please check GPS and try again.',
+          message:
+              'Unable to get your current location. Please check GPS and try again.',
         );
       }
 
@@ -143,7 +147,8 @@ class LocationVerificationService {
       }
 
       // Calculate accuracy statistics
-      double avgAccuracy = accuracies.reduce((a, b) => a + b) / accuracies.length;
+      double avgAccuracy =
+          accuracies.reduce((a, b) => a + b) / accuracies.length;
 
       // Calculate position variation
       double maxDistance = 0;
@@ -159,7 +164,8 @@ class LocationVerificationService {
         }
       }
 
-      bool isAccurate = avgAccuracy <= 10.0 && maxDistance <= 5.0; // Good accuracy
+      bool isAccurate =
+          avgAccuracy <= 10.0 && maxDistance <= 5.0; // Good accuracy
 
       return LocationAccuracyTest(
         isAccurate: isAccurate,
