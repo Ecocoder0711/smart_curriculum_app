@@ -417,7 +417,8 @@ class _FacialRecognitionCameraState extends State<FacialRecognitionCamera>
     _processingTimer = Timer.periodic(const Duration(seconds: 2), (
       timer,
     ) async {
-      if (!_isProcessing) {
+      // Ensure widget is still mounted and timer hasn't been cancelled
+      if (!_isProcessing && mounted && _processingTimer != null) {
         await _processCurrentFrame();
       }
     });
@@ -426,7 +427,9 @@ class _FacialRecognitionCameraState extends State<FacialRecognitionCamera>
   Future<void> _processCurrentFrame() async {
     if (_isProcessing) return;
 
-    setState(() => _isProcessing = true);
+    if (mounted) {
+      setState(() => _isProcessing = true);
+    }
 
     try {
       // In production: Capture and process actual camera frame
@@ -437,10 +440,12 @@ class _FacialRecognitionCameraState extends State<FacialRecognitionCamera>
       // Mock processing
       final result = await _faceService.processFrame(Uint8List(0));
 
-      setState(() {
-        _lastResult = result;
-        _isProcessing = false;
-      });
+      if (mounted) {
+        setState(() {
+          _lastResult = result;
+          _isProcessing = false;
+        });
+      }
 
       // Auto-mark attendance if confidence is high
       if (result.isRecognized && result.confidence > 0.9) {
@@ -448,7 +453,9 @@ class _FacialRecognitionCameraState extends State<FacialRecognitionCamera>
       }
     } catch (e) {
       debugPrint('Frame processing error: $e');
-      setState(() => _isProcessing = false);
+      if (mounted) {
+        setState(() => _isProcessing = false);
+      }
     }
   }
 
@@ -659,9 +666,16 @@ class _FacialRecognitionCameraState extends State<FacialRecognitionCamera>
 
   @override
   void dispose() {
+    // Cancel timer to prevent setState after dispose
     _processingTimer?.cancel();
+    _processingTimer = null;
+
+    // Dispose animation controller
     _scanAnimationController.dispose();
-    // _cameraController?.dispose(); // In production
+
+    // In production: dispose camera controller
+    // _cameraController?.dispose();
+
     super.dispose();
   }
 }
