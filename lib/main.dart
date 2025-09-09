@@ -16,9 +16,7 @@ import 'models/user.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const SmartCurriculumApp());
 }
 
@@ -52,31 +50,61 @@ class SmartCurriculumApp extends StatelessWidget {
             themeAnimationCurve: Curves.linear,
             theme: ThemeData(
               colorScheme: ColorScheme.fromSeed(
-                seedColor: const Color(0xFF2E7D32),
+                seedColor: const Color(0xFF1976D2), // Professional blue
                 brightness: Brightness.light,
+                primary: const Color(0xFF1976D2), // Material Blue 700
+                secondary: const Color(0xFF0288D1), // Material Light Blue 700
+                tertiary: const Color(0xFF00ACC1), // Material Cyan 600
+                surface: Colors.white,
+                onSurface: const Color(0xFF1A1A1A),
+                onPrimary: Colors.white,
+                surfaceVariant: const Color(0xFFF5F5F5),
+                onSurfaceVariant: const Color(0xFF424242),
+                outline: const Color(0xFFE0E0E0),
               ),
               fontFamily: GoogleFonts.inter().fontFamily,
               // Use the same base for both light and dark to keep TextStyle inheritance consistent
               textTheme: GoogleFonts.interTextTheme(
                 ThemeData.light().textTheme.copyWith(
-                  bodyLarge: const TextStyle(color: Colors.black87),
-                  bodyMedium: const TextStyle(color: Colors.black87),
-                  titleMedium: const TextStyle(color: Colors.black87),
-                  titleLarge: const TextStyle(color: Colors.black87),
+                  bodyLarge: const TextStyle(
+                    color: Color(0xFF1A1A1A),
+                    fontWeight: FontWeight.w400,
+                  ),
+                  bodyMedium: const TextStyle(
+                    color: Color(0xFF424242),
+                    fontWeight: FontWeight.w400,
+                  ),
+                  titleMedium: const TextStyle(
+                    color: Color(0xFF1A1A1A),
+                    fontWeight: FontWeight.w600,
+                  ),
+                  titleLarge: const TextStyle(
+                    color: Color(0xFF1A1A1A),
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
               useMaterial3: true,
               appBarTheme: const AppBarTheme(
                 centerTitle: true,
-                elevation: 0,
-                backgroundColor: Color(0xFF2E7D32),
+                elevation: 4,
+                shadowColor: Color(0x331976D2),
+                backgroundColor: Color(0xFF1976D2),
                 foregroundColor: Colors.white,
-              ),
-              cardTheme: const CardThemeData(
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                titleTextStyle: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5,
                 ),
+              ),
+              cardTheme: CardThemeData(
+                elevation: 3,
+                shadowColor: Colors.black.withOpacity(0.1),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                surfaceTintColor: Colors.white,
               ),
               elevatedButtonTheme: ElevatedButtonThemeData(
                 style: ElevatedButton.styleFrom(
@@ -96,88 +124,97 @@ class SmartCurriculumApp extends StatelessWidget {
             ),
             darkTheme: ThemeData(
               colorScheme: ColorScheme.fromSeed(
-                seedColor: const Color(0xFF2E7D32),
+                seedColor: const Color(0xFF1976D2), // Keep the same professional blue
                 brightness: Brightness.dark,
-                surface: const Color(
-                  0xFF1A1A1A,
-                ), // Deeper card background like Netflix/Spotify
-                onSurface: const Color(0xFFE8E8E8), // Softer white text
-                primary: const Color(0xFF4CAF50), // Brighter green for accents
-                secondary: const Color(
-                  0xFF81C784,
-                ), // Lighter green for secondary elements
-                tertiary: const Color(0xFF388E3C), // Medium green for variety
-                surfaceVariant: const Color(
-                  0xFF2D2D2D,
-                ), // Slightly lighter for elevated surfaces
-                onSurfaceVariant: const Color(0xFFB0B0B0), // Muted text
-                outline: const Color(0xFF3A3A3A), // Subtle borders
+                surface: const Color(0xFF1E1E1E), // Professional dark surface like VS Code
+                onSurface: const Color(0xFFE1E1E1), // Clean white text
+                primary: const Color(0xFF2196F3), // Bright professional blue
+                secondary: const Color(0xFF03DAC6), // Modern teal accent
+                tertiary: const Color(0xFF90CAF9), // Light blue for variety
+                surfaceVariant: const Color(0xFF2D2D2D), // Elevated surfaces
+                onSurfaceVariant: const Color(0xFFB8B8B8), // Muted text
+                outline: const Color(0xFF404040), // Subtle borders
+                background: const Color(0xFF121212), // Deep background like Material Design
+                onBackground: const Color(0xFFE1E1E1),
               ),
-              scaffoldBackgroundColor: const Color(
-                0xFF0D0D0D,
-              ), // Very dark background like premium apps
+              scaffoldBackgroundColor: const Color(0xFF121212), // Material Design dark background
               fontFamily: GoogleFonts.inter().fontFamily,
               textTheme: GoogleFonts.interTextTheme(
                 ThemeData.dark().textTheme.copyWith(
                   displayLarge: const TextStyle(
                     color: Color(0xFFFFFFFF),
                     fontWeight: FontWeight.w300,
+                    fontSize: 57,
                   ),
                   displayMedium: const TextStyle(
                     color: Color(0xFFFFFFFF),
                     fontWeight: FontWeight.w400,
+                    fontSize: 45,
                   ),
                   displaySmall: const TextStyle(
                     color: Color(0xFFFFFFFF),
                     fontWeight: FontWeight.w400,
+                    fontSize: 36,
                   ),
                   headlineLarge: const TextStyle(
                     color: Color(0xFFFFFFFF),
                     fontWeight: FontWeight.w400,
+                    fontSize: 32,
                   ),
                   headlineMedium: const TextStyle(
                     color: Color(0xFFFFFFFF),
                     fontWeight: FontWeight.w400,
+                    fontSize: 28,
                   ),
                   headlineSmall: const TextStyle(
                     color: Color(0xFFFFFFFF),
                     fontWeight: FontWeight.w400,
+                    fontSize: 24,
                   ),
                   titleLarge: const TextStyle(
                     color: Color(0xFFFFFFFF),
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 22,
                   ),
                   titleMedium: const TextStyle(
-                    color: Color(0xFFE8E8E8),
-                    fontWeight: FontWeight.w500,
+                    color: Color(0xFFE1E1E1),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
                   ),
                   titleSmall: const TextStyle(
-                    color: Color(0xFFE8E8E8),
+                    color: Color(0xFFE1E1E1),
                     fontWeight: FontWeight.w500,
+                    fontSize: 14,
                   ),
                   bodyLarge: const TextStyle(
-                    color: Color(0xFFE8E8E8),
+                    color: Color(0xFFE1E1E1),
                     fontWeight: FontWeight.w400,
+                    fontSize: 16,
                   ),
                   bodyMedium: const TextStyle(
-                    color: Color(0xFFE8E8E8),
+                    color: Color(0xFFE1E1E1),
                     fontWeight: FontWeight.w400,
+                    fontSize: 14,
                   ),
                   bodySmall: const TextStyle(
-                    color: Color(0xFFB0B0B0),
+                    color: Color(0xFFB8B8B8),
                     fontWeight: FontWeight.w400,
+                    fontSize: 12,
                   ),
                   labelLarge: const TextStyle(
-                    color: Color(0xFFE8E8E8),
+                    color: Color(0xFFE1E1E1),
                     fontWeight: FontWeight.w500,
+                    fontSize: 14,
                   ),
                   labelMedium: const TextStyle(
-                    color: Color(0xFFB0B0B0),
+                    color: Color(0xFFB8B8B8),
                     fontWeight: FontWeight.w500,
+                    fontSize: 12,
                   ),
                   labelSmall: const TextStyle(
-                    color: Color(0xFFB0B0B0),
+                    color: Color(0xFFB8B8B8),
                     fontWeight: FontWeight.w500,
+                    fontSize: 11,
                   ),
                 ),
               ),
@@ -185,9 +222,7 @@ class SmartCurriculumApp extends StatelessWidget {
               appBarTheme: AppBarTheme(
                 centerTitle: true,
                 elevation: 0,
-                backgroundColor: const Color(
-                  0xFF000000,
-                ), // Pure black for dark mode
+                backgroundColor: const Color(0xFF1E1E1E), // Professional dark AppBar
                 surfaceTintColor: Colors.transparent,
                 foregroundColor: Colors.white,
                 shadowColor: Colors.transparent,
@@ -195,24 +230,25 @@ class SmartCurriculumApp extends StatelessWidget {
                   color: Colors.white,
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5,
                 ),
               ),
               cardTheme: CardThemeData(
                 elevation: 8,
-                shadowColor: Colors.black.withOpacity(0.3),
-                color: const Color(0xFF1A1A1A),
+                shadowColor: Colors.black.withOpacity(0.4),
+                color: const Color(0xFF1E1E1E),
                 surfaceTintColor: Colors.transparent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                   side: BorderSide(
-                    color: const Color(0xFF3A3A3A).withOpacity(0.3),
+                    color: const Color(0xFF404040).withOpacity(0.2),
                     width: 0.5,
                   ),
                 ),
               ),
               elevatedButtonTheme: ElevatedButtonThemeData(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF4CAF50),
+                  backgroundColor: const Color(0xFF2196F3),
                   foregroundColor: Colors.white,
                   elevation: 4,
                   shadowColor: Colors.black.withOpacity(0.3),

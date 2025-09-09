@@ -29,7 +29,7 @@ class _QRGeneratorScreenState extends State<QRGeneratorScreen> {
       'location': _locationController.text,
       'teacherLat': 37.7749, // San Francisco coordinates for demo
       'teacherLon': -122.4194,
-      'radiusMeters': 50.0,
+      'radiusMeters': 15.0,
     };
 
     setState(() {
@@ -41,9 +41,18 @@ class _QRGeneratorScreenState extends State<QRGeneratorScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Generate QR Code'),
+        title: Text(
+          'Generate QR Code',
+          style: TextStyle(
+            color: Theme.of(context).brightness == Brightness.dark 
+                ? Colors.white 
+                : Colors.white,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -52,18 +61,76 @@ class _QRGeneratorScreenState extends State<QRGeneratorScreen> {
             // Input fields
             TextField(
               controller: _classSessionController,
-              decoration: const InputDecoration(
+              style: TextStyle(
+                color: Theme.of(context).brightness == Brightness.dark 
+                    ? Colors.white 
+                    : Colors.black,
+              ),
+              decoration: InputDecoration(
                 labelText: 'Class Session ID',
-                border: OutlineInputBorder(),
+                labelStyle: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark 
+                      ? Colors.white70 
+                      : Colors.grey[700],
+                ),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Theme.of(context).brightness == Brightness.dark 
+                        ? Colors.white54 
+                        : Colors.grey,
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Theme.of(context).brightness == Brightness.dark 
+                        ? Colors.white54 
+                        : Colors.grey,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.primary,
+                    width: 2,
+                  ),
+                ),
               ),
               onChanged: (_) => _generateQR(),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: _locationController,
-              decoration: const InputDecoration(
+              style: TextStyle(
+                color: Theme.of(context).brightness == Brightness.dark 
+                    ? Colors.white 
+                    : Colors.black,
+              ),
+              decoration: InputDecoration(
                 labelText: 'Location',
-                border: OutlineInputBorder(),
+                labelStyle: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark 
+                      ? Colors.white70 
+                      : Colors.grey[700],
+                ),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Theme.of(context).brightness == Brightness.dark 
+                        ? Colors.white54 
+                        : Colors.grey,
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Theme.of(context).brightness == Brightness.dark 
+                        ? Colors.white54 
+                        : Colors.grey,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.primary,
+                    width: 2,
+                  ),
+                ),
               ),
               onChanged: (_) => _generateQR(),
             ),
@@ -117,31 +184,72 @@ class _QRGeneratorScreenState extends State<QRGeneratorScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.blue.withValues(alpha: 0.1),
+                color: Theme.of(context).brightness == Brightness.dark 
+                    ? Colors.blue.withValues(alpha: 0.2)
+                    : Colors.blue.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.blue),
+                border: Border.all(
+                  color: Theme.of(context).brightness == Brightness.dark 
+                      ? Colors.blue.withValues(alpha: 0.6)
+                      : Colors.blue,
+                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.info_outline, color: Colors.blue),
+                      Icon(
+                        Icons.info_outline, 
+                        color: Theme.of(context).brightness == Brightness.dark 
+                            ? Colors.blue[300]
+                            : Colors.blue,
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         'How it works:',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.blue[700],
+                          color: Theme.of(context).brightness == Brightness.dark 
+                              ? Colors.blue[300]
+                              : Colors.blue[700],
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 8),
-                  const Text('1. Students scan this QR code with their app'),
-                  const Text('2. App verifies student location (50m radius)'),
-                  const Text('3. Attendance is marked automatically'),
-                  const Text('4. Prevents proxy attendance'),
+                  Text(
+                    '1. Students scan this QR code with their app',
+                    style: TextStyle(
+                      color: Theme.of(context).brightness == Brightness.dark 
+                          ? Colors.white
+                          : Colors.black87,
+                    ),
+                  ),
+                  Text(
+                    '2. App verifies student location (15m radius)',
+                    style: TextStyle(
+                      color: Theme.of(context).brightness == Brightness.dark 
+                          ? Colors.white
+                          : Colors.black87,
+                    ),
+                  ),
+                  Text(
+                    '3. Attendance is marked automatically',
+                    style: TextStyle(
+                      color: Theme.of(context).brightness == Brightness.dark 
+                          ? Colors.white
+                          : Colors.black87,
+                    ),
+                  ),
+                  Text(
+                    '4. Prevents proxy attendance',
+                    style: TextStyle(
+                      color: Theme.of(context).brightness == Brightness.dark 
+                          ? Colors.white
+                          : Colors.black87,
+                    ),
+                  ),
                 ],
               ),
             ),

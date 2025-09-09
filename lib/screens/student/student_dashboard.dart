@@ -86,32 +86,110 @@ class _StudentDashboardState extends State<StudentDashboard> {
           VoiceCommandWidget(onCommand: _handleVoiceCommand),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.home),
-            label: AppLocalizations.of(context).home,
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: _selectedIndex,
+          onTap: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          selectedItemColor: Theme.of(context).colorScheme.primary,
+          unselectedItemColor: Colors.grey.shade600,
+          selectedFontSize: 12,
+          unselectedFontSize: 11,
+          selectedLabelStyle: const TextStyle(
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
           ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.schedule),
-            label: AppLocalizations.of(context).schedule,
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.check_circle),
-            label: AppLocalizations.of(context).attendance,
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.person),
-            label: AppLocalizations.of(context).profile,
-          ),
-        ],
+          unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500),
+          elevation: 0,
+          items: [
+            BottomNavigationBarItem(
+              icon: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: _selectedIndex == 0
+                      ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  _selectedIndex == 0
+                      ? Icons.home_rounded
+                      : Icons.home_outlined,
+                  size: 24,
+                ),
+              ),
+              label: AppLocalizations.of(context).home,
+            ),
+            BottomNavigationBarItem(
+              icon: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: _selectedIndex == 1
+                      ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  _selectedIndex == 1
+                      ? Icons.schedule_rounded
+                      : Icons.schedule_outlined,
+                  size: 24,
+                ),
+              ),
+              label: AppLocalizations.of(context).schedule,
+            ),
+            BottomNavigationBarItem(
+              icon: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: _selectedIndex == 2
+                      ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  _selectedIndex == 2
+                      ? Icons.check_circle_rounded
+                      : Icons.check_circle_outline_rounded,
+                  size: 24,
+                ),
+              ),
+              label: AppLocalizations.of(context).attendance,
+            ),
+            BottomNavigationBarItem(
+              icon: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: _selectedIndex == 3
+                      ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  _selectedIndex == 3
+                      ? Icons.person_rounded
+                      : Icons.person_outline_rounded,
+                  size: 24,
+                ),
+              ),
+              label: AppLocalizations.of(context).profile,
+            ),
+          ],
+        ),
       ),
     );
   }

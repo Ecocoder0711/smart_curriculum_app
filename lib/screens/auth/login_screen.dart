@@ -28,6 +28,9 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_formKey.currentState!.validate()) {
       final authProvider = context.read<AuthProvider>();
 
+      // Clear any previous errors
+      authProvider.clearError();
+
       debugPrint(
         'DEBUG: Attempting login with email: ${_emailController.text.trim()}',
       );
@@ -42,14 +45,8 @@ class _LoginScreenState extends State<LoginScreen> {
         'DEBUG: Current user after login: ${authProvider.user?.toJson()}',
       );
 
-      if (!success && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(authProvider.error ?? 'Login failed'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      // Error handling is now done through the AuthProvider error state
+      // The error will be displayed automatically in the UI through the Consumer widget
     }
   }
 
@@ -105,6 +102,52 @@ class _LoginScreenState extends State<LoginScreen> {
                 key: _formKey,
                 child: Column(
                   children: [
+                    // Error Display
+                    Consumer<AuthProvider>(
+                      builder: (context, authProvider, child) {
+                        if (authProvider.error != null) {
+                          return Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                            margin: const EdgeInsets.only(bottom: 16),
+                            decoration: BoxDecoration(
+                              color: Colors.red.shade50,
+                              border: Border.all(color: Colors.red.shade200),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.error_outline,
+                                  color: Colors.red.shade700,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    authProvider.error!,
+                                    style: TextStyle(
+                                      color: Colors.red.shade700,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () => authProvider.clearError(),
+                                  icon: Icon(
+                                    Icons.close,
+                                    color: Colors.red.shade700,
+                                    size: 18,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    ),
+
                     // Email Field
                     TextFormField(
                       controller: _emailController,

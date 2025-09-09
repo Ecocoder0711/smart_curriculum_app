@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/language_provider.dart';
+import '../../providers/theme_provider.dart';
 import '../../widgets/dashboard_card.dart';
 import '../../widgets/activity_card.dart';
 import 'qr_generator_screen.dart';
 import '../../models/user.dart';
+import '../advanced_analytics_dashboard.dart';
+import '../location_test_screen.dart';
 
 class TeacherDashboard extends StatefulWidget {
   const TeacherDashboard({super.key});
@@ -27,26 +31,110 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _screens[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assignment),
-            label: 'Activities',
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: _selectedIndex,
+          onTap: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          selectedItemColor: Theme.of(context).colorScheme.primary,
+          unselectedItemColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+          selectedFontSize: 12,
+          unselectedFontSize: 11,
+          selectedLabelStyle: const TextStyle(
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.check_circle),
-            label: 'Attendance',
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-        ],
+          unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500),
+          elevation: 0,
+          items: [
+            BottomNavigationBarItem(
+              icon: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: _selectedIndex == 0
+                      ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  _selectedIndex == 0
+                      ? Icons.home_rounded
+                      : Icons.home_outlined,
+                  size: 24,
+                ),
+              ),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: _selectedIndex == 1
+                      ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  _selectedIndex == 1
+                      ? Icons.assignment_rounded
+                      : Icons.assignment_outlined,
+                  size: 24,
+                ),
+              ),
+              label: 'Activities',
+            ),
+            BottomNavigationBarItem(
+              icon: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: _selectedIndex == 2
+                      ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  _selectedIndex == 2
+                      ? Icons.check_circle_rounded
+                      : Icons.check_circle_outline_rounded,
+                  size: 24,
+                ),
+              ),
+              label: 'Attendance',
+            ),
+            BottomNavigationBarItem(
+              icon: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: _selectedIndex == 3
+                      ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  _selectedIndex == 3
+                      ? Icons.person_rounded
+                      : Icons.person_outline_rounded,
+                  size: 24,
+                ),
+              ),
+              label: 'Profile',
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -59,10 +147,89 @@ class TeacherHomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dashboard'),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                  width: 1,
+                ),
+              ),
+              child: Icon(
+                Icons.dashboard_rounded,
+                color: Theme.of(context).colorScheme.primary,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'Teacher Dashboard',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        foregroundColor: Theme.of(context).colorScheme.onSurface,
+        elevation: 2,
+        shadowColor: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
         actions: [
           IconButton(
-            icon: const Icon(Icons.qr_code),
+            icon: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                  width: 1,
+                ),
+              ),
+              child: Icon(
+                Icons.psychology_rounded,
+                color: Theme.of(context).colorScheme.primary,
+                size: 18,
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const AdvancedAnalyticsDashboard(
+                    userRole: 'teacher',
+                    userId: 'teacher_001',
+                  ),
+                ),
+              );
+            },
+            tooltip: 'AI Analytics',
+          ),
+          IconButton(
+            icon: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
+                  width: 1,
+                ),
+              ),
+              child: Icon(
+                Icons.qr_code_rounded,
+                color: Theme.of(context).colorScheme.secondary,
+                size: 18,
+              ),
+            ),
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -70,12 +237,55 @@ class TeacherHomeScreen extends StatelessWidget {
                 ),
               );
             },
+            tooltip: 'QR Generator',
           ),
           IconButton(
-            icon: const Icon(Icons.notifications),
+            icon: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.tertiary.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.tertiary.withOpacity(0.2),
+                  width: 1,
+                ),
+              ),
+              child: Icon(
+                Icons.location_on_rounded,
+                color: Theme.of(context).colorScheme.tertiary,
+                size: 18,
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const LocationTestScreen(),
+                ),
+              );
+            },
+            tooltip: 'Test Location Services',
+          ),
+          IconButton(
+            icon: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: Colors.orange.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: Colors.orange.withOpacity(0.2),
+                  width: 1,
+                ),
+              ),
+              child: Icon(
+                Icons.notifications_rounded,
+                color: Colors.orange,
+                size: 18,
+              ),
+            ),
             onPressed: () {
               // TODO: Navigate to notifications
             },
+            tooltip: 'Notifications',
           ),
         ],
       ),
@@ -87,48 +297,121 @@ class TeacherHomeScreen extends StatelessWidget {
             // Welcome Section
             Consumer<AuthProvider>(
               builder: (context, authProvider, child) {
-                return Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Theme.of(
-                            context,
-                          ).colorScheme.primary,
-                          child: Text(
-                            authProvider.user?.name
-                                    .substring(0, 1)
-                                    .toUpperCase() ??
-                                'T',
-                            style: const TextStyle(
-                              fontSize: 24,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Welcome back,',
-                                style: Theme.of(context).textTheme.bodyMedium
-                                    ?.copyWith(color: Colors.grey[600]),
-                              ),
-                              Text(
-                                authProvider.user?.name ?? 'Teacher',
-                                style: Theme.of(context).textTheme.headlineSmall
-                                    ?.copyWith(fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                        ),
+                final user = authProvider.user;
+                return Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Theme.of(context).colorScheme.primary,
+                        Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                        Theme.of(context).colorScheme.secondary,
                       ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                        blurRadius: 15,
+                        offset: const Offset(0, 8),
+                        spreadRadius: 2,
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.3),
+                            width: 2,
+                          ),
+                        ),
+                        child: Text(
+                          user?.name.substring(0, 1).toUpperCase() ?? 'T',
+                          style: const TextStyle(
+                            fontSize: 28,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Welcome back,',
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.9),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              user?.name ?? 'Teacher',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.5,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.school_rounded,
+                                    color: Colors.white,
+                                    size: 16,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    'Educator',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Icon(
+                          Icons.auto_awesome_rounded,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                      ),
+                    ],
                   ),
                 );
               },
@@ -143,8 +426,8 @@ class TeacherHomeScreen extends StatelessWidget {
                   child: DashboardCard(
                     title: 'Today\'s Classes',
                     value: '5',
-                    icon: Icons.class_,
-                    color: Colors.blue,
+                    icon: Icons.school_rounded,
+                    color: Colors.blue.shade600,
                     onTap: () {
                       // TODO: Navigate to today's classes
                     },
@@ -155,8 +438,8 @@ class TeacherHomeScreen extends StatelessWidget {
                   child: DashboardCard(
                     title: 'Pending Activities',
                     value: '12',
-                    icon: Icons.pending_actions,
-                    color: Colors.orange,
+                    icon: Icons.pending_actions_rounded,
+                    color: Colors.orange.shade600,
                     onTap: () {
                       // TODO: Navigate to pending activities
                     },
@@ -173,8 +456,8 @@ class TeacherHomeScreen extends StatelessWidget {
                   child: DashboardCard(
                     title: 'Students',
                     value: '150',
-                    icon: Icons.people,
-                    color: Colors.green,
+                    icon: Icons.people_rounded,
+                    color: Colors.green.shade600,
                     onTap: () {
                       // TODO: Navigate to students
                     },
@@ -185,8 +468,8 @@ class TeacherHomeScreen extends StatelessWidget {
                   child: DashboardCard(
                     title: 'Avg Attendance',
                     value: '85%',
-                    icon: Icons.trending_up,
-                    color: Colors.purple,
+                    icon: Icons.trending_up_rounded,
+                    color: Colors.purple.shade600,
                     onTap: () {
                       // TODO: Navigate to attendance analytics
                     },
@@ -198,44 +481,116 @@ class TeacherHomeScreen extends StatelessWidget {
             const SizedBox(height: 24),
 
             // Recent Activities
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Recent Activities',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                TextButton(
-                  onPressed: () {
-                    // TODO: Navigate to all activities
-                  },
-                  child: const Text('See All'),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 16),
-
-            // Activity List
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: 3, // Sample data
-              itemBuilder: (context, index) {
-                return ActivityCard(
-                  title: 'Mathematics Lecture ${index + 1}',
-                  subject: 'Mathematics',
-                  time: '10:00 AM - 11:00 AM',
-                  location: 'Room 101',
-                  attendanceCount: 45,
-                  totalStudents: 50,
-                  onTap: () {
-                    // TODO: Navigate to activity details
-                  },
-                );
-              },
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Icon(
+                              Icons.history_rounded,
+                              color: Theme.of(context).colorScheme.primary,
+                              size: 20,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Recent Activities',
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).brightness == Brightness.dark
+                                      ? Colors.white
+                                      : Theme.of(context).colorScheme.onSurface,
+                                ),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.primary.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            // TODO: Navigate to all activities
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'See All',
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              Icon(
+                                Icons.arrow_forward_rounded,
+                                color: Theme.of(context).colorScheme.primary,
+                                size: 16,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  // Activity List
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: 3, // Sample data
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        child: ActivityCard(
+                          title: 'Mathematics Lecture ${index + 1}',
+                          subject: 'Mathematics',
+                          time: '10:00 AM - 11:00 AM',
+                          location: 'Room 101',
+                          attendanceCount: 45,
+                          totalStudents: 50,
+                          onTap: () {
+                            // TODO: Navigate to activity details
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -246,22 +601,141 @@ class TeacherHomeScreen extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const QRGeneratorScreen()),
           );
         },
-        icon: const Icon(Icons.qr_code),
-        label: const Text('Generate QR'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Colors.white,
+        elevation: 6,
+        icon: Container(
+          padding: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: const Icon(Icons.qr_code_rounded, size: 20),
+        ),
+        label: const Text(
+          'Generate QR',
+          style: TextStyle(fontWeight: FontWeight.w600, letterSpacing: 0.5),
+        ),
       ),
     );
   }
 }
 
-// Placeholder screens for other tabs
+// Enhanced screens for other tabs
 class TeacherActivitiesScreen extends StatelessWidget {
   const TeacherActivitiesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Activities')),
-      body: const Center(child: Text('Activities Screen - Coming Soon')),
+      appBar: AppBar(
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.assignment_rounded,
+                color: Colors.white,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+            const Text(
+              'Activities',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
+          ],
+        ),
+        actions: [
+          IconButton(
+            icon: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.add_rounded,
+                color: Colors.white,
+                size: 20,
+              ),
+            ),
+            onPressed: () {
+              // TODO: Add new activity
+            },
+            tooltip: 'Add Activity',
+          ),
+        ],
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.blue.shade50, Colors.white],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(32),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.blue.withOpacity(0.1),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade100,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Icon(
+                        Icons.assignment_rounded,
+                        size: 48,
+                        color: Colors.blue.shade600,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Activities Management',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue.shade700,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Create, manage, and track student activities.\nComing soon with AI-powered insights!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey.shade600,
+                        height: 1.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -272,8 +746,121 @@ class TeacherAttendanceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Attendance')),
-      body: const Center(child: Text('Attendance Screen - Coming Soon')),
+      appBar: AppBar(
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.check_circle_rounded,
+                color: Colors.white,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+            const Text(
+              'Attendance',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
+          ],
+        ),
+        actions: [
+          IconButton(
+            icon: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.analytics_rounded,
+                color: Colors.white,
+                size: 20,
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const AdvancedAnalyticsDashboard(
+                    userRole: 'teacher',
+                    userId: 'teacher_001',
+                  ),
+                ),
+              );
+            },
+            tooltip: 'Analytics',
+          ),
+        ],
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.green.shade50, Colors.white],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(32),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.green.withOpacity(0.1),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.green.shade100,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Icon(
+                        Icons.check_circle_rounded,
+                        size: 48,
+                        color: Colors.green.shade600,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Smart Attendance',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green.shade700,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Track student attendance with AI-powered\nfacial recognition and QR code scanning.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey.shade600,
+                        height: 1.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -332,24 +919,57 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Teacher Profile'),
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            foregroundColor: Theme.of(context).colorScheme.onPrimary,
+            title: Text(
+              'Teacher Profile',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            foregroundColor: Theme.of(context).colorScheme.onSurface,
+            elevation: 2,
+            shadowColor: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
             actions: [
               if (_isEditing)
-                TextButton(
-                  onPressed: _saveProfile,
-                  child: const Text(
-                    'Save',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                Container(
+                  margin: const EdgeInsets.only(right: 8),
+                  child: TextButton.icon(
+                    onPressed: _saveProfile,
+                    icon: Icon(
+                      Icons.save_rounded,
+                      color: Theme.of(context).colorScheme.primary,
+                      size: 18,
+                    ),
+                    label: Text(
+                      'Save',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    style: TextButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
                 ),
               if (!_isEditing)
                 IconButton(
-                  icon: const Icon(Icons.edit),
+                  icon: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      Icons.edit_rounded,
+                      color: Theme.of(context).colorScheme.primary,
+                      size: 18,
+                    ),
+                  ),
                   onPressed: () {
                     setState(() {
                       _isEditing = true;
@@ -407,15 +1027,27 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                   Center(
                     child: Stack(
                       children: [
-                        CircleAvatar(
-                          radius: 60,
-                          backgroundColor: Theme.of(
-                            context,
-                          ).colorScheme.primary.withOpacity(0.1),
-                          child: Icon(
-                            Icons.person,
-                            size: 80,
-                            color: Theme.of(context).colorScheme.primary,
+                        Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                Theme.of(context).colorScheme.primary,
+                                Theme.of(context).colorScheme.secondary,
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                          ),
+                          child: CircleAvatar(
+                            radius: 60,
+                            backgroundColor: Theme.of(context).colorScheme.surface,
+                            child: Icon(
+                              Icons.person_rounded,
+                              size: 80,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
                           ),
                         ),
                         if (_isEditing)
@@ -426,10 +1058,17 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                               decoration: BoxDecoration(
                                 color: Theme.of(context).colorScheme.primary,
                                 shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
                               ),
                               child: IconButton(
                                 icon: const Icon(
-                                  Icons.camera_alt,
+                                  Icons.camera_alt_rounded,
                                   color: Colors.white,
                                 ),
                                 onPressed: _changeProfilePicture,
@@ -443,92 +1082,129 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
 
                   // Personal Information Card
                   Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Personal Information',
-                            style: Theme.of(context).textTheme.titleLarge
-                                ?.copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          if (!_isEditing) ...[
-                            const SizedBox(height: 4),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 3,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.blue.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                  color: Colors.blue.withOpacity(0.3),
+                    elevation: 4,
+                    shadowColor: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        gradient: LinearGradient(
+                          colors: [
+                            Theme.of(context).colorScheme.surface,
+                            Theme.of(context).colorScheme.surface.withOpacity(0.8),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Icon(
+                                    Icons.person_outline_rounded,
+                                    color: Theme.of(context).colorScheme.primary,
+                                    size: 20,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Text(
+                                  'Personal Information',
+                                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            if (!_isEditing) ...[
+                              const SizedBox(height: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.edit_rounded,
+                                      size: 14,
+                                      color: Theme.of(context).colorScheme.primary,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      'Tap edit to modify fields',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Theme.of(context).colorScheme.primary,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.edit,
-                                    size: 12,
-                                    color: Colors.blue[700],
-                                  ),
-                                  const SizedBox(width: 3),
-                                  Text(
-                                    'Tap edit to modify fields',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.blue[700],
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            ],
+                            const SizedBox(height: 16),
+                            _buildProfileField(
+                              'Full Name',
+                              _nameController,
+                              Icons.person,
+                              validator: (value) {
+                                if (value?.isEmpty ?? true) {
+                                  return 'Name is required';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 16),
+                            _buildProfileField(
+                              'Email',
+                              _emailController,
+                              Icons.email,
+                              enabled:
+                                  false, // Email typically shouldn't be editable
+                            ),
+                            const SizedBox(height: 16),
+                            _buildProfileField(
+                              'Department',
+                              _departmentController,
+                              Icons.school,
+                              validator: (value) {
+                                if (value?.isEmpty ?? true) {
+                                  return 'Department is required';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 16),
+                            _buildProfileField(
+                              'Employee ID',
+                              _employeeIdController,
+                              Icons.badge,
+                              enabled:
+                                  false, // Employee ID typically shouldn't be editable
                             ),
                           ],
-                          const SizedBox(height: 16),
-                          _buildProfileField(
-                            'Full Name',
-                            _nameController,
-                            Icons.person,
-                            validator: (value) {
-                              if (value?.isEmpty ?? true) {
-                                return 'Name is required';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 16),
-                          _buildProfileField(
-                            'Email',
-                            _emailController,
-                            Icons.email,
-                            enabled:
-                                false, // Email typically shouldn't be editable
-                          ),
-                          const SizedBox(height: 16),
-                          _buildProfileField(
-                            'Department',
-                            _departmentController,
-                            Icons.school,
-                            validator: (value) {
-                              if (value?.isEmpty ?? true) {
-                                return 'Department is required';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 16),
-                          _buildProfileField(
-                            'Employee ID',
-                            _employeeIdController,
-                            Icons.badge,
-                            enabled:
-                                false, // Employee ID typically shouldn't be editable
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
@@ -558,7 +1234,14 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                           ),
                           const SizedBox(height: 12),
                           if (teacher.subjects.isEmpty)
-                            const Text('No subjects assigned')
+                            Text(
+                              'No subjects assigned',
+                              style: TextStyle(
+                                color: Theme.of(context).brightness == Brightness.dark 
+                                    ? Colors.white70 
+                                    : Colors.black87,
+                              ),
+                            )
                           else
                             ...teacher.subjects.map(
                               (subject) => Padding(
@@ -569,11 +1252,22 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                                   children: [
                                     Icon(
                                       Icons.book,
-                                      color: Colors.grey[600],
+                                      color: Theme.of(context).brightness == Brightness.dark 
+                                          ? Colors.white70 
+                                          : Colors.grey[600],
                                       size: 20,
                                     ),
                                     const SizedBox(width: 8),
-                                    Expanded(child: Text(subject)),
+                                    Expanded(
+                                      child: Text(
+                                        subject,
+                                        style: TextStyle(
+                                          color: Theme.of(context).brightness == Brightness.dark 
+                                              ? Colors.white 
+                                              : Colors.black87,
+                                        ),
+                                      ),
+                                    ),
                                     if (_isEditing)
                                       IconButton(
                                         icon: const Icon(
@@ -679,23 +1373,32 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                               },
                             ),
                           ),
-                          ListTile(
-                            leading: const Icon(Icons.dark_mode),
-                            title: const Text('Dark Mode'),
-                            trailing: Switch(
-                              value:
-                                  false, // This should come from theme preferences
-                              onChanged: (value) {
-                                // TODO: Update theme preferences
-                              },
-                            ),
+                          Consumer<ThemeProvider>(
+                            builder: (context, themeProvider, child) {
+                              return ListTile(
+                                leading: const Icon(Icons.dark_mode),
+                                title: const Text('Dark Mode'),
+                                trailing: Switch(
+                                  value: themeProvider.isDarkMode,
+                                  onChanged: (value) {
+                                    themeProvider.toggleTheme();
+                                  },
+                                ),
+                              );
+                            },
                           ),
-                          ListTile(
-                            leading: const Icon(Icons.language),
-                            title: const Text('Language'),
-                            subtitle: const Text('English'),
-                            trailing: const Icon(Icons.arrow_forward_ios),
-                            onTap: _changeLanguage,
+                          Consumer<LanguageProvider>(
+                            builder: (context, languageProvider, child) {
+                              return ListTile(
+                                leading: const Icon(Icons.language),
+                                title: const Text('Language'),
+                                subtitle: Text(
+                                  languageProvider.currentLanguageName,
+                                ),
+                                trailing: const Icon(Icons.arrow_forward_ios),
+                                onTap: () => _showLanguageDialog(context),
+                              );
+                            },
                           ),
                           ListTile(
                             leading: const Icon(
@@ -760,6 +1463,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
     bool enabled = true,
   }) {
     final isFieldEnabled = _isEditing && enabled;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return TextFormField(
       controller: controller,
@@ -767,23 +1471,53 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
       validator: validator,
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon, color: isFieldEnabled ? null : Colors.grey[400]),
+        prefixIcon: Icon(
+          icon, 
+          color: isFieldEnabled 
+              ? (isDark ? Colors.white70 : null)
+              : (isDark ? Colors.grey[500] : Colors.grey[400]),
+        ),
         suffixIcon: !isFieldEnabled
             ? Tooltip(
                 message: 'Tap the edit button to modify this field',
                 child: Icon(
                   Icons.lock_outline,
                   size: 18,
-                  color: Colors.grey[400],
+                  color: isDark ? Colors.grey[500] : Colors.grey[400],
                 ),
               )
             : null,
-        border: const OutlineInputBorder(),
+        border: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: isDark ? Colors.white54 : Colors.grey,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: isDark ? Colors.white54 : Colors.grey,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Theme.of(context).colorScheme.primary,
+            width: 2,
+          ),
+        ),
         filled: !isFieldEnabled,
-        fillColor: !isFieldEnabled ? Colors.grey[50] : null,
-        labelStyle: TextStyle(color: isFieldEnabled ? null : Colors.grey[500]),
+        fillColor: !isFieldEnabled 
+            ? (isDark ? Colors.grey[800] : Colors.grey[50]) 
+            : null,
+        labelStyle: TextStyle(
+          color: isFieldEnabled 
+              ? (isDark ? Colors.white70 : null)
+              : (isDark ? Colors.grey[500] : Colors.grey[500]),
+        ),
       ),
-      style: TextStyle(color: isFieldEnabled ? null : Colors.grey[600]),
+      style: TextStyle(
+        color: isFieldEnabled 
+            ? (isDark ? Colors.white : null)
+            : (isDark ? Colors.grey[400] : Colors.grey[600]),
+      ),
     );
   }
 
@@ -793,6 +1527,8 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
     IconData icon,
     Color color,
   ) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -814,7 +1550,10 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
           ),
           Text(
             title,
-            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+            style: TextStyle(
+              fontSize: 12, 
+              color: isDark ? Colors.white70 : Colors.grey[600],
+            ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -997,43 +1736,157 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
     );
   }
 
-  void _changeLanguage() {
+  void _showLanguageDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Select Language'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: const Text('English'),
-              leading: Radio(
-                value: 'en',
-                groupValue: 'en',
-                onChanged: (value) {},
-              ),
-              onTap: () => Navigator.pop(context),
+      builder: (context) => Consumer<LanguageProvider>(
+        builder: (context, langProvider, child) {
+          return AlertDialog(
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            surfaceTintColor: Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
             ),
-            ListTile(
-              title: const Text('Hindi'),
-              leading: Radio(
-                value: 'hi',
-                groupValue: 'en',
-                onChanged: (value) {},
-              ),
-              onTap: () => Navigator.pop(context),
+            title: Row(
+              children: [
+                Icon(
+                  Icons.language_rounded,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 24,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Select Language',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-            ListTile(
-              title: const Text('Spanish'),
-              leading: Radio(
-                value: 'es',
-                groupValue: 'en',
-                onChanged: (value) {},
-              ),
-              onTap: () => Navigator.pop(context),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      RadioListTile<String>(
+                        title: Row(
+                          children: [
+                            Text(
+                              '🇺🇸',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              'English',
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                        value: 'English',
+                        groupValue: langProvider.currentLanguageName,
+                        activeColor: Theme.of(context).colorScheme.primary,
+                        onChanged: (value) {
+                          if (value != null) {
+                            langProvider.changeLanguage(value);
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Language changed to English'),
+                                backgroundColor: Theme.of(context).colorScheme.primary,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                      Divider(
+                        height: 1,
+                        color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+                      ),
+                      RadioListTile<String>(
+                        title: Row(
+                          children: [
+                            Text(
+                              '🇮🇳',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              'हिंदी',
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                        value: 'हिंदी',
+                        groupValue: langProvider.currentLanguageName,
+                        activeColor: Theme.of(context).colorScheme.primary,
+                        onChanged: (value) {
+                          if (value != null) {
+                            langProvider.changeLanguage(value);
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('भाषा हिंदी में बदल दी गई'),
+                                backgroundColor: Theme.of(context).colorScheme.primary,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.info_outline,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 16,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Language preference will be saved',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                style: TextButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                ),
+                child: const Text('Cancel'),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
