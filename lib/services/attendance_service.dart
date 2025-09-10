@@ -286,6 +286,140 @@ class AttendanceService {
     return '$classSessionId:$location';
   }
 
+  /// Two-step verification attendance marking with face recognition + QR code
+  Future<AttendanceResult> markAttendanceWithQR({
+    required String studentId,
+    required String qrData,
+    required bool faceVerified,
+    required String verificationMethod,
+  }) async {
+    try {
+      // Simulate network delay
+      await Future.delayed(const Duration(seconds: 2));
+
+      // Ensure face verification was completed
+      if (!faceVerified) {
+        return AttendanceResult(
+          success: false,
+          message: 'Face verification required before QR scanning',
+        );
+      }
+
+      // Parse QR data to extract session information
+      final sessionData = _parseQRDataInternal(qrData);
+      if (sessionData == null) {
+        return AttendanceResult(
+          success: false,
+          message: 'Invalid QR code format',
+        );
+      }
+
+      final classSessionId = sessionData['sessionId'] ?? '';
+
+      if (classSessionId.isEmpty) {
+        return AttendanceResult(
+          success: false,
+          message: 'Invalid session ID in QR code',
+        );
+      }
+
+      // Validate session exists and is active
+      final sessionValidation = await _validateClassSession(classSessionId);
+      if (!sessionValidation['isValid']) {
+        return AttendanceResult(
+          success: false,
+          message: sessionValidation['message'],
+        );
+      }
+
+      // Check if attendance already marked
+      final existingAttendance = await _getExistingAttendance(
+        studentId,
+        classSessionId,
+      );
+      if (existingAttendance != null) {
+        return AttendanceResult(
+          success: false,
+          message: 'Attendance already marked for this class.',
+          attendance: existingAttendance,
+        );
+      }
+
+      // Create attendance record with enhanced security
+      final attendance = Attendance(
+        id: 'att_${DateTime.now().millisecondsSinceEpoch}',
+        studentId: studentId,
+        classSessionId: classSessionId,
+        timestamp: DateTime.now(),
+        status: AttendanceStatus.present,
+        location: 'Verified with $verificationMethod',
+        markedByTeacher: false, // Student self-marked with verification
+        isProxy: false, // Cannot be proxy with face verification
+        remarks: 'Two-step verification: Face + QR code',
+      );
+
+      // Notify teacher about successful verification (simplified)
+      try {
+        print(
+          'INFO: Student $studentId marked attendance with verified identity',
+        );
+        print('Session: $classSessionId, Method: $verificationMethod');
+      } catch (e) {
+        // Continue even if logging fails
+        print('Warning: Failed to log attendance: $e');
+      }
+
+      return AttendanceResult(
+        success: true,
+        message: 'Attendance marked successfully with verified identity',
+        attendance: attendance,
+        isProxy: false,
+      );
+    } catch (e) {
+      return AttendanceResult(
+        success: false,
+        message: 'Error marking attendance: ${e.toString()}',
+      );
+    }
+  }
+
+  /// Parse QR code data to extract session information for two-step verification
+  Map<String, String>? _parseQRDataInternal(String qrData) {
+    try {
+      // Handle different QR code formats
+      if (qrData.startsWith('{') && qrData.endsWith('}')) {
+        // JSON format
+        final data = json.decode(qrData) as Map<String, dynamic>;
+        return {
+          'sessionId': data['sessionId']?.toString() ?? '',
+          'teacherId': data['teacherId']?.toString() ?? '',
+          'classId': data['classId']?.toString() ?? '',
+        };
+      } else if (qrData.contains('|')) {
+        // Pipe-separated format: sessionId|teacherId|classId
+        final parts = qrData.split('|');
+        if (parts.length >= 2) {
+          return {
+            'sessionId': parts[0],
+            'teacherId': parts[1],
+            'classId': parts.length > 2 ? parts[2] : '',
+          };
+        }
+      } else {
+        // Simple session ID format
+        return {
+          'sessionId': qrData,
+          'teacherId': 'teacher_1', // Default for demo
+          'classId': 'class_1',
+        };
+      }
+    } catch (e) {
+      // Invalid format
+      return null;
+    }
+    return null;
+  }
+
   // Parse QR code data
   Map<String, String>? parseQRData(String qrData) {
     final parts = qrData.split(':');
