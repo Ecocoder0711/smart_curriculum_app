@@ -6,11 +6,10 @@ import '../../providers/theme_provider.dart';
 import '../../utils/app_localizations.dart';
 import '../../widgets/dashboard_card.dart';
 import '../../widgets/activity_card.dart';
-import 'combined_qr_scanner_screen.dart';
+import 'basic_qr_scanner_screen.dart';
 import '../common/settings_screen.dart';
 import '../advanced_analytics_dashboard.dart';
 import '../../services/voice_command_service.dart';
-import '../../services/facial_recognition_service.dart';
 import '../../models/user.dart';
 
 class StudentDashboard extends StatefulWidget {
@@ -45,11 +44,9 @@ class _StudentDashboardState extends State<StudentDashboard> {
     switch (command.type) {
       case VoiceCommandType.markAttendance:
         Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => const CombinedQRScannerScreen(),
-          ),
+          MaterialPageRoute(builder: (context) => const BasicQRScannerScreen()),
         );
-        _voiceService.speak("Opening QR scanner for attendance");
+        _voiceService.speak("Opening face verification for attendance");
         break;
       case VoiceCommandType.navigate:
         if (command.action == 'dashboard') {
@@ -212,16 +209,6 @@ class StudentHomeScreen extends StatelessWidget {
             icon: const Icon(Icons.notifications),
             onPressed: () {
               // TODO: Navigate to notifications
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.qr_code_scanner),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const CombinedQRScannerScreen(),
-                ),
-              );
             },
           ),
         ],
@@ -513,15 +500,11 @@ class StudentHomeScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: _QuickActionCard(
-                    title: 'Mark Attendance',
-                    icon: Icons.qr_code_scanner,
+                    title: 'Face ID Attendance',
+                    icon: Icons.face,
                     color: Colors.green,
                     onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const CombinedQRScannerScreen(),
-                        ),
-                      );
+                      _showFaceRecognitionDialog(context);
                     },
                   ),
                 ),
@@ -1026,23 +1009,18 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                           const SizedBox(height: 12),
                           ListTile(
                             leading: const Icon(
-                              Icons.qr_code_scanner,
+                              Icons.face,
                               color: Colors.green,
                             ),
                             title: Text(
                               AppLocalizations.of(context).markAttendance,
                             ),
-                            subtitle: Text(
-                              AppLocalizations.of(context).scanQrCodeAttendance,
+                            subtitle: const Text(
+                              'Face verification + QR scanning',
                             ),
                             trailing: const Icon(Icons.arrow_forward_ios),
                             onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const CombinedQRScannerScreen(),
-                                ),
-                              );
+                              _showFaceRecognitionDialog(context);
                             },
                           ),
                           ListTile(
@@ -1663,7 +1641,7 @@ void _showFaceRecognitionDialog(BuildContext context) {
           const SizedBox(width: 8),
           Expanded(
             child: const Text(
-              'Face Recognition Attendance',
+              'Two-Step Attendance Verification',
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -1674,12 +1652,12 @@ void _showFaceRecognitionDialog(BuildContext context) {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Enable contactless attendance using facial recognition.',
+            'Enhanced two-step attendance verification with face recognition followed by QR code scanning.',
             style: TextStyle(fontSize: 14),
           ),
           const SizedBox(height: 16),
           const Text(
-            '🔹 99.2% accuracy\n🔹 Instant recognition\n🔹 Anti-spoofing protection',
+            '🔹 Step 1: Face verification\n🔹 Step 2: QR code scanning\n🔹 Anti-proxy protection\n🔹 100% secure attendance',
             style: TextStyle(fontSize: 14),
           ),
         ],
@@ -1701,30 +1679,11 @@ void _showFaceRecognitionDialog(BuildContext context) {
                   Navigator.pop(context);
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => Scaffold(
-                        appBar: AppBar(
-                          title: const Text('Face Recognition'),
-                          backgroundColor: Colors.blue,
-                          foregroundColor: Colors.white,
-                        ),
-                        body: FacialRecognitionCamera(
-                          classSessionId: 'demo_session_123',
-                          onAttendanceMarked: (result) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(result.message),
-                                backgroundColor: result.success
-                                    ? Colors.green
-                                    : Colors.red,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
+                      builder: (context) => const BasicQRScannerScreen(),
                     ),
                   );
                 },
-                child: const Text('Try Now'),
+                child: const Text('Start Verification'),
               ),
             ),
           ],

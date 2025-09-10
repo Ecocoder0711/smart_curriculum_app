@@ -68,7 +68,7 @@ dependencies:
   fl_chart: ^0.68.0
   
   # QR Code & Barcode - Updated for Firebase compatibility
-  mobile_scanner: ^6.0.0
+  mobile_scanner: ^7.0.1
   qr_flutter: ^4.1.0
   
   # Image & Camera

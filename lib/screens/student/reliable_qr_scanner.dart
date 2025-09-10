@@ -153,7 +153,7 @@ class _ReliableQRScannerState extends State<ReliableQRScanner>
               MobileScanner(
                 controller: cameraController!,
                 onDetect: _onQRDetected,
-                errorBuilder: (context, error, child) {
+                errorBuilder: (context, error) {
                   return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
