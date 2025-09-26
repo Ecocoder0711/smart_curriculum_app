@@ -4,7 +4,7 @@ import 'dart:developer' as developer;
 /// Provides structured logging with different levels
 class AppLogger {
   static const String _appName = 'SmartCurriculumApp';
-  
+
   /// Log debug information
   static void debug(String message, {String? tag}) {
     developer.log(
@@ -14,7 +14,7 @@ class AppLogger {
       time: DateTime.now(),
     );
   }
-  
+
   /// Log general information
   static void info(String message, {String? tag}) {
     developer.log(
@@ -24,7 +24,7 @@ class AppLogger {
       time: DateTime.now(),
     );
   }
-  
+
   /// Log warnings
   static void warning(String message, {String? tag}) {
     developer.log(
@@ -34,9 +34,14 @@ class AppLogger {
       time: DateTime.now(),
     );
   }
-  
+
   /// Log errors
-  static void error(String message, {String? tag, Object? error, StackTrace? stackTrace}) {
+  static void error(
+    String message, {
+    String? tag,
+    Object? error,
+    StackTrace? stackTrace,
+  }) {
     developer.log(
       message,
       name: _appName,
@@ -46,7 +51,7 @@ class AppLogger {
       stackTrace: stackTrace,
     );
   }
-  
+
   /// Log for demo purposes (can be disabled in production)
   static void demo(String message, {String? feature}) {
     developer.log(

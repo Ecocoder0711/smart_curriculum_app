@@ -302,7 +302,11 @@ class _ReliableQRScannerState extends State<ReliableQRScanner>
           Navigator.of(context).pop(); // Close loading dialog
 
           if (!locationResult.success) {
-            _showDialog('Location Error', locationResult.message, isError: true);
+            _showDialog(
+              'Location Error',
+              locationResult.message,
+              isError: true,
+            );
             return;
           }
         }

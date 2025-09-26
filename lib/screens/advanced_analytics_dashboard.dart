@@ -993,7 +993,9 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
                               gradient: LinearGradient(
                                 colors: [
                                   _getTrendColor(entry.value),
-                                  _getTrendColor(entry.value).withValues(alpha: 0.7),
+                                  _getTrendColor(
+                                    entry.value,
+                                  ).withValues(alpha: 0.7),
                                 ],
                               ),
                             ),
@@ -1030,7 +1032,10 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           gradient: LinearGradient(
-            colors: [Colors.white, colorScheme.secondary.withValues(alpha: 0.03)],
+            colors: [
+              Colors.white,
+              colorScheme.secondary.withValues(alpha: 0.03),
+            ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -1072,10 +1077,14 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
                   margin: const EdgeInsets.only(bottom: 16),
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: _getPredictionColor(entry.key).withValues(alpha: 0.08),
+                    color: _getPredictionColor(
+                      entry.key,
+                    ).withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: _getPredictionColor(entry.key).withValues(alpha: 0.2),
+                      color: _getPredictionColor(
+                        entry.key,
+                      ).withValues(alpha: 0.2),
                       width: 1,
                     ),
                   ),

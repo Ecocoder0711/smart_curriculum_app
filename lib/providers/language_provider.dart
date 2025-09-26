@@ -56,15 +56,21 @@ class LanguageProvider extends ChangeNotifier {
     AppLogger.debug('DEBUG: changeLanguage() called with: $languageName');
     final locale = supportedLanguages[languageName];
     AppLogger.debug('DEBUG: changeLanguage() - locale found: $locale');
-    AppLogger.debug('DEBUG: changeLanguage() - current locale: $_currentLocale');
+    AppLogger.debug(
+      'DEBUG: changeLanguage() - current locale: $_currentLocale',
+    );
     if (locale != null && locale != _currentLocale) {
       _currentLocale = locale;
-      AppLogger.debug('DEBUG: changeLanguage() - setting new locale: $_currentLocale');
+      AppLogger.debug(
+        'DEBUG: changeLanguage() - setting new locale: $_currentLocale',
+      );
       notifyListeners();
       await _saveLanguageToPrefs();
       AppLogger.debug('DEBUG: changeLanguage() - saved to prefs');
     } else {
-      AppLogger.debug('DEBUG: changeLanguage() - no change needed or locale not found');
+      AppLogger.debug(
+        'DEBUG: changeLanguage() - no change needed or locale not found',
+      );
     }
   }
 

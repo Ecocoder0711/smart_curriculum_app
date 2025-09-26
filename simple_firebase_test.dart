@@ -9,7 +9,9 @@ void main() async {
     );
     AppLogger.demo('✅ Firebase initialized successfully!');
     AppLogger.demo('📋 Project ID: ${Firebase.app().options.projectId}');
-    AppLogger.demo('🔑 API Key: ${Firebase.app().options.apiKey.substring(0, 10)}...');
+    AppLogger.demo(
+      '🔑 API Key: ${Firebase.app().options.apiKey.substring(0, 10)}...',
+    );
     AppLogger.demo(
       '🌐 Storage Bucket: ${Firebase.app().options.storageBucket ?? 'Not configured'}',
     );

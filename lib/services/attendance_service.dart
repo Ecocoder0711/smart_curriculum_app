@@ -364,7 +364,9 @@ class AttendanceService {
         AppLogger.debug(
           'INFO: Student $studentId marked attendance with verified identity',
         );
-        AppLogger.debug('Session: $classSessionId, Method: $verificationMethod');
+        AppLogger.debug(
+          'Session: $classSessionId, Method: $verificationMethod',
+        );
       } catch (e) {
         // Continue even if logging fails
         AppLogger.debug('Warning: Failed to log attendance: $e');

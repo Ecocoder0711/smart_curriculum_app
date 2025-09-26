@@ -26,7 +26,9 @@ void main() async {
   AppLogger.demo('Is Proxy: ${validResult.isProxy}');
 
   // Test Case 2: Proxy detection - student too far (50m)
-  AppLogger.demo('\n📍 Test Case 2: Student outside proximity (50m) - Medium Severity');
+  AppLogger.demo(
+    '\n📍 Test Case 2: Student outside proximity (50m) - Medium Severity',
+  );
   final proxyResult1 = await attendanceService.markAttendance(
     studentId: 'student_456',
     classSessionId: 'session_cs101_morning',
@@ -34,7 +36,9 @@ void main() async {
     studentLat: 28.6145, // 50m away from teacher
     studentLon: 77.2095,
   );
-  AppLogger.demo('Result: ${proxyResult1.success ? "✅ ALLOWED" : "❌ PROXY DETECTED"}');
+  AppLogger.demo(
+    'Result: ${proxyResult1.success ? "✅ ALLOWED" : "❌ PROXY DETECTED"}',
+  );
   AppLogger.demo('Message: ${proxyResult1.message}');
   AppLogger.demo('Is Proxy: ${proxyResult1.isProxy}');
 
@@ -47,7 +51,9 @@ void main() async {
     studentLat: 28.6160, // 200m+ away from teacher
     studentLon: 77.2120,
   );
-  AppLogger.demo('Result: ${proxyResult2.success ? "✅ ALLOWED" : "❌ PROXY DETECTED"}');
+  AppLogger.demo(
+    'Result: ${proxyResult2.success ? "✅ ALLOWED" : "❌ PROXY DETECTED"}',
+  );
   AppLogger.demo('Message: ${proxyResult2.message}');
   AppLogger.demo('Is Proxy: ${proxyResult2.isProxy}');
 

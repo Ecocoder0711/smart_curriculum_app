@@ -118,7 +118,9 @@ class _StudentDashboardState extends State<StudentDashboard> {
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   color: _selectedIndex == 0
-                      ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
+                      ? Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.1)
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -136,7 +138,9 @@ class _StudentDashboardState extends State<StudentDashboard> {
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   color: _selectedIndex == 1
-                      ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
+                      ? Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.1)
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -154,7 +158,9 @@ class _StudentDashboardState extends State<StudentDashboard> {
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   color: _selectedIndex == 2
-                      ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
+                      ? Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.1)
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -172,7 +178,9 @@ class _StudentDashboardState extends State<StudentDashboard> {
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   color: _selectedIndex == 3
-                      ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
+                      ? Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.1)
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -369,7 +377,9 @@ class StudentHomeScreen extends StatelessWidget {
                           icon: const Icon(Icons.face),
                           label: const Text('Face ID'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white.withValues(alpha: 0.2),
+                            backgroundColor: Colors.white.withValues(
+                              alpha: 0.2,
+                            ),
                             foregroundColor: Colors.white,
                           ),
                         ),
@@ -1277,7 +1287,9 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDarkMode ? color.withValues(alpha: 0.15) : color.withValues(alpha: 0.1),
+        color: isDarkMode
+            ? color.withValues(alpha: 0.15)
+            : color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isDarkMode

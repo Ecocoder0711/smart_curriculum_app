@@ -25,7 +25,7 @@ class _BasicQRScannerScreenState extends State<BasicQRScannerScreen> {
   String? verifiedStudentId;
   String? studentName;
   bool isScanning = false;
-  
+
   // Mobile scanner controller
   MobileScannerController cameraController = MobileScannerController(
     facing: CameraFacing.back,
@@ -107,7 +107,7 @@ class _BasicQRScannerScreenState extends State<BasicQRScannerScreen> {
       // Get context-dependent values before async operation
       final authProvider = context.read<AuthProvider>();
       final user = authProvider.user;
-      
+
       // Mock face verification - in real implementation, this would use camera
       await Future.delayed(const Duration(seconds: 3));
 
@@ -192,7 +192,9 @@ class _BasicQRScannerScreenState extends State<BasicQRScannerScreen> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -378,7 +380,7 @@ class _BasicQRScannerScreenState extends State<BasicQRScannerScreen> {
                       }
                     },
                   ),
-                  
+
                   // QR Frame overlay
                   CustomPaint(
                     painter: QRScannerOverlayPainter(
@@ -386,7 +388,7 @@ class _BasicQRScannerScreenState extends State<BasicQRScannerScreen> {
                     ),
                     child: Container(),
                   ),
-                  
+
                   // Controls at the bottom
                   Positioned(
                     bottom: 16,
@@ -407,7 +409,7 @@ class _BasicQRScannerScreenState extends State<BasicQRScannerScreen> {
                             onPressed: _toggleTorch,
                           ),
                         ),
-                        
+
                         // Switch camera button
                         Container(
                           decoration: BoxDecoration(
@@ -423,29 +425,29 @@ class _BasicQRScannerScreenState extends State<BasicQRScannerScreen> {
                       ],
                     ),
                   ),
-                  
+
                   // Scanning indicator
                   if (isProcessing)
                     Container(
                       color: Colors.black.withValues(alpha: 0.5),
                       child: const Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                        ),
+                        child: CircularProgressIndicator(color: Colors.white),
                       ),
                     ),
                 ],
               ),
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Instructions
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Column(
@@ -526,7 +528,9 @@ class _BasicQRScannerScreenState extends State<BasicQRScannerScreen> {
             child: Text(
               'Your attendance has been successfully recorded with verified identity.',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 15),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontSize: 15),
             ),
           ),
           const SizedBox(height: 24),

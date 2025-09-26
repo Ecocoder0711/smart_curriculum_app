@@ -34,7 +34,9 @@ class DebugTestScreen extends StatelessWidget {
                         const SizedBox(height: 8),
                         ElevatedButton(
                           onPressed: () {
-                            AppLogger.demo('TEST: Manually calling toggleTheme()');
+                            AppLogger.demo(
+                              'TEST: Manually calling toggleTheme()',
+                            );
                             themeProvider.toggleTheme();
                           },
                           child: const Text('Toggle Theme'),
@@ -77,7 +79,9 @@ class DebugTestScreen extends StatelessWidget {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            AppLogger.demo('TEST: Manually changing to English');
+                            AppLogger.demo(
+                              'TEST: Manually changing to English',
+                            );
                             languageProvider.changeLanguage('English');
                           },
                           child: const Text('Switch to English'),
