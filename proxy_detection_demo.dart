@@ -3,16 +3,17 @@
 
 import 'lib/services/attendance_service.dart';
 import 'lib/services/teacher_notification_service.dart';
+import 'lib/utils/logger.dart';
 
 void main() async {
-  print('🎯 SMART INDIA HACKATHON - Enhanced Proxy Detection Demo');
-  print('=' * 60);
+  AppLogger.demo('🎯 SMART INDIA HACKATHON - Enhanced Proxy Detection Demo');
+  AppLogger.demo('=' * 60);
 
   final attendanceService = AttendanceService();
   final notificationService = TeacherNotificationService();
 
   // Test Case 1: Valid attendance within 15m proximity
-  print('\n📍 Test Case 1: Student within allowed proximity (10m)');
+  AppLogger.demo('\n📍 Test Case 1: Student within allowed proximity (10m)');
   final validResult = await attendanceService.markAttendance(
     studentId: 'student_123',
     classSessionId: 'session_cs101_morning',
@@ -20,12 +21,12 @@ void main() async {
     studentLat: 28.6139, // Close to teacher location
     studentLon: 77.2090,
   );
-  print('Result: ${validResult.success ? "✅ ALLOWED" : "❌ BLOCKED"}');
-  print('Message: ${validResult.message}');
-  print('Is Proxy: ${validResult.isProxy}');
+  AppLogger.demo('Result: ${validResult.success ? "✅ ALLOWED" : "❌ BLOCKED"}');
+  AppLogger.demo('Message: ${validResult.message}');
+  AppLogger.demo('Is Proxy: ${validResult.isProxy}');
 
   // Test Case 2: Proxy detection - student too far (50m)
-  print('\n📍 Test Case 2: Student outside proximity (50m) - Medium Severity');
+  AppLogger.demo('\n📍 Test Case 2: Student outside proximity (50m) - Medium Severity');
   final proxyResult1 = await attendanceService.markAttendance(
     studentId: 'student_456',
     classSessionId: 'session_cs101_morning',
@@ -33,12 +34,12 @@ void main() async {
     studentLat: 28.6145, // 50m away from teacher
     studentLon: 77.2095,
   );
-  print('Result: ${proxyResult1.success ? "✅ ALLOWED" : "❌ PROXY DETECTED"}');
-  print('Message: ${proxyResult1.message}');
-  print('Is Proxy: ${proxyResult1.isProxy}');
+  AppLogger.demo('Result: ${proxyResult1.success ? "✅ ALLOWED" : "❌ PROXY DETECTED"}');
+  AppLogger.demo('Message: ${proxyResult1.message}');
+  AppLogger.demo('Is Proxy: ${proxyResult1.isProxy}');
 
   // Test Case 3: High severity proxy detection - student very far (200m)
-  print('\n📍 Test Case 3: Student very far (200m) - High Severity');
+  AppLogger.demo('\n📍 Test Case 3: Student very far (200m) - High Severity');
   final proxyResult2 = await attendanceService.markAttendance(
     studentId: 'student_789',
     classSessionId: 'session_cs101_morning',
@@ -46,62 +47,62 @@ void main() async {
     studentLat: 28.6160, // 200m+ away from teacher
     studentLon: 77.2120,
   );
-  print('Result: ${proxyResult2.success ? "✅ ALLOWED" : "❌ PROXY DETECTED"}');
-  print('Message: ${proxyResult2.message}');
-  print('Is Proxy: ${proxyResult2.isProxy}');
+  AppLogger.demo('Result: ${proxyResult2.success ? "✅ ALLOWED" : "❌ PROXY DETECTED"}');
+  AppLogger.demo('Message: ${proxyResult2.message}');
+  AppLogger.demo('Is Proxy: ${proxyResult2.isProxy}');
 
   // Teacher Notification Summary
-  print('\n📊 Teacher Notification Summary');
-  print('-' * 40);
+  AppLogger.demo('\n📊 Teacher Notification Summary');
+  AppLogger.demo('-' * 40);
   final summary = notificationService.getNotificationSummary(
     'teacher_demo_123',
   );
-  print('Total Notifications: ${summary.totalNotifications}');
-  print('Unread Count: ${summary.unreadCount}');
-  print('Proxy Detections Today: ${summary.proxyDetectionsToday}');
-  print('High Priority Unread: ${summary.highPriorityUnread}');
+  AppLogger.demo('Total Notifications: ${summary.totalNotifications}');
+  AppLogger.demo('Unread Count: ${summary.unreadCount}');
+  AppLogger.demo('Proxy Detections Today: ${summary.proxyDetectionsToday}');
+  AppLogger.demo('High Priority Unread: ${summary.highPriorityUnread}');
 
   // List all notifications for teacher
-  print('\n📋 Recent Proxy Detection Alerts');
-  print('-' * 40);
+  AppLogger.demo('\n📋 Recent Proxy Detection Alerts');
+  AppLogger.demo('-' * 40);
   final notifications = notificationService.getNotificationsForTeacher(
     'teacher_demo_123',
   );
 
   for (int i = 0; i < notifications.length && i < 3; i++) {
     final notification = notifications[i];
-    print(
+    AppLogger.demo(
       '${i + 1}. ${notification.studentDetails?.name} (${notification.studentDetails?.rollNumber})',
     );
-    print(
+    AppLogger.demo(
       '   Distance: ${notification.proxyDetails?.distanceFromClassroom.toStringAsFixed(1)}m',
     );
-    print(
+    AppLogger.demo(
       '   Severity: ${notification.proxyDetails?.severity.name.toUpperCase()}',
     );
-    print('   Time: ${_formatTime(notification.timestamp)}');
-    print('   Status: ${notification.isRead ? "READ" : "UNREAD"}');
-    print('');
+    AppLogger.demo('   Time: ${_formatTime(notification.timestamp)}');
+    AppLogger.demo('   Status: ${notification.isRead ? "READ" : "UNREAD"}');
+    AppLogger.demo('');
   }
 
-  print('🏆 ENHANCED FEATURES SUMMARY:');
-  print('✅ 15-meter proximity enforcement');
-  print('✅ Real-time teacher notifications');
-  print('✅ Severity-based alerts (Low/Medium/High)');
-  print('✅ Detailed student information in alerts');
-  print('✅ Professional teacher dashboard');
-  print('✅ Automatic proxy flagging');
-  print('✅ GPS-based location verification');
-  print('✅ Comprehensive analytics');
+  AppLogger.demo('🏆 ENHANCED FEATURES SUMMARY:');
+  AppLogger.demo('✅ 15-meter proximity enforcement');
+  AppLogger.demo('✅ Real-time teacher notifications');
+  AppLogger.demo('✅ Severity-based alerts (Low/Medium/High)');
+  AppLogger.demo('✅ Detailed student information in alerts');
+  AppLogger.demo('✅ Professional teacher dashboard');
+  AppLogger.demo('✅ Automatic proxy flagging');
+  AppLogger.demo('✅ GPS-based location verification');
+  AppLogger.demo('✅ Comprehensive analytics');
 
-  print('\n🎯 This Smart India Hackathon project now includes:');
-  print('• Advanced AI recommendation system');
-  print('• Facial recognition attendance');
-  print('• Voice command interface');
-  print('• Real-time proxy detection');
-  print('• Professional analytics dashboard');
-  print('• Multi-language support');
-  print('• Enhanced security features');
+  AppLogger.demo('\n🎯 This Smart India Hackathon project now includes:');
+  AppLogger.demo('• Advanced AI recommendation system');
+  AppLogger.demo('• Facial recognition attendance');
+  AppLogger.demo('• Voice command interface');
+  AppLogger.demo('• Real-time proxy detection');
+  AppLogger.demo('• Professional analytics dashboard');
+  AppLogger.demo('• Multi-language support');
+  AppLogger.demo('• Enhanced security features');
 }
 
 String _formatTime(DateTime time) {

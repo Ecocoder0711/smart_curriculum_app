@@ -298,11 +298,13 @@ class _ReliableQRScannerState extends State<ReliableQRScanner>
           radiusMeters: radiusMeters,
         );
 
-        Navigator.of(context).pop(); // Close loading dialog
+        if (mounted) {
+          Navigator.of(context).pop(); // Close loading dialog
 
-        if (!locationResult.success) {
-          _showDialog('Location Error', locationResult.message, isError: true);
-          return;
+          if (!locationResult.success) {
+            _showDialog('Location Error', locationResult.message, isError: true);
+            return;
+          }
         }
 
         if (!locationResult.isWithinRange) {
@@ -330,9 +332,11 @@ class _ReliableQRScannerState extends State<ReliableQRScanner>
         );
       }
     } catch (e) {
-      Navigator.of(context).pop(); // Close loading dialog
-      debugPrint('Error marking attendance: $e');
-      _showDialog('Error', 'Failed to mark attendance: $e', isError: true);
+      if (mounted) {
+        Navigator.of(context).pop(); // Close loading dialog
+        debugPrint('Error marking attendance: $e');
+        _showDialog('Error', 'Failed to mark attendance: $e', isError: true);
+      }
     } finally {
       setState(() {
         isProcessing = false;

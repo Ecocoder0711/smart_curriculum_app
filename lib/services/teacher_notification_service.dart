@@ -53,8 +53,9 @@ class TeacherNotificationService {
     await _sendEmailAlert(notification);
     await _logToSystem(notification);
 
+    // Simple debug output - no AppLogger
     print('📧 Teacher notification sent: ${notification.title}');
-    print('👤 Student: ${studentName} (${studentRollNumber})');
+    print('👤 Student: $studentName ($studentRollNumber)');  
     print('📍 Distance: ${distanceFromClassroom.toStringAsFixed(2)}m');
     print('⚠️  Severity: ${notification.proxyDetails?.severity}');
   }

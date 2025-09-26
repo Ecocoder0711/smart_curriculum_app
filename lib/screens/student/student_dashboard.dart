@@ -87,7 +87,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 8,
               offset: const Offset(0, -2),
             ),
@@ -118,7 +118,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   color: _selectedIndex == 0
-                      ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                      ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -136,7 +136,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   color: _selectedIndex == 1
-                      ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                      ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -154,7 +154,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   color: _selectedIndex == 2
-                      ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                      ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -172,7 +172,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   color: _selectedIndex == 3
-                      ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                      ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -304,7 +304,7 @@ class StudentHomeScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.purple.withOpacity(0.3),
+                    color: Colors.purple.withValues(alpha: 0.3),
                     blurRadius: 10,
                     offset: const Offset(0, 5),
                   ),
@@ -369,7 +369,7 @@ class StudentHomeScreen extends StatelessWidget {
                           icon: const Icon(Icons.face),
                           label: const Text('Face ID'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white.withOpacity(0.2),
+                            backgroundColor: Colors.white.withValues(alpha: 0.2),
                             foregroundColor: Colors.white,
                           ),
                         ),
@@ -805,10 +805,10 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                                 vertical: 3,
                               ),
                               decoration: BoxDecoration(
-                                color: Colors.blue.withOpacity(0.1),
+                                color: Colors.blue.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(8),
                                 border: Border.all(
-                                  color: Colors.blue.withOpacity(0.3),
+                                  color: Colors.blue.withValues(alpha: 0.3),
                                 ),
                               ),
                               child: Row(
@@ -1277,11 +1277,11 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDarkMode ? color.withOpacity(0.15) : color.withOpacity(0.1),
+        color: isDarkMode ? color.withValues(alpha: 0.15) : color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isDarkMode
-              ? color.withOpacity(0.4)
+              ? color.withValues(alpha: 0.4)
               : color.withValues(alpha: 0.3),
         ),
       ),
@@ -1497,38 +1497,26 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ListTile(
+            RadioListTile<String>(
               title: Text(AppLocalizations.of(context).translate('english')),
-              leading: Radio(
-                value: 'English',
-                groupValue: languageProvider.currentLanguageName,
-                onChanged: (value) {
-                  if (value != null) {
-                    languageProvider.changeLanguage(value);
-                    Navigator.pop(context);
-                  }
-                },
-              ),
-              onTap: () {
-                languageProvider.changeLanguage('English');
-                Navigator.pop(context);
+              value: 'English',
+              groupValue: languageProvider.currentLanguageName,
+              onChanged: (value) {
+                if (value != null) {
+                  languageProvider.changeLanguage(value);
+                  Navigator.pop(context);
+                }
               },
             ),
-            ListTile(
+            RadioListTile<String>(
               title: Text(AppLocalizations.of(context).translate('hindi')),
-              leading: Radio(
-                value: 'हिंदी',
-                groupValue: languageProvider.currentLanguageName,
-                onChanged: (value) {
-                  if (value != null) {
-                    languageProvider.changeLanguage(value);
-                    Navigator.pop(context);
-                  }
-                },
-              ),
-              onTap: () {
-                languageProvider.changeLanguage('हिंदी');
-                Navigator.pop(context);
+              value: 'हिंदी',
+              groupValue: languageProvider.currentLanguageName,
+              onChanged: (value) {
+                if (value != null) {
+                  languageProvider.changeLanguage(value);
+                  Navigator.pop(context);
+                }
               },
             ),
           ],

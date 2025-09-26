@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../utils/logger.dart';
 
 class LanguageProvider extends ChangeNotifier {
   static const String _languageKey = 'selectedLanguage';
@@ -44,7 +45,7 @@ class LanguageProvider extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     } catch (e) {
-      print('Error loading language preference: $e');
+      AppLogger.debug('Error loading language preference: $e');
       _isLoading = false;
       notifyListeners();
     }
@@ -52,18 +53,18 @@ class LanguageProvider extends ChangeNotifier {
 
   // Change language
   Future<void> changeLanguage(String languageName) async {
-    print('DEBUG: changeLanguage() called with: $languageName');
+    AppLogger.debug('DEBUG: changeLanguage() called with: $languageName');
     final locale = supportedLanguages[languageName];
-    print('DEBUG: changeLanguage() - locale found: $locale');
-    print('DEBUG: changeLanguage() - current locale: $_currentLocale');
+    AppLogger.debug('DEBUG: changeLanguage() - locale found: $locale');
+    AppLogger.debug('DEBUG: changeLanguage() - current locale: $_currentLocale');
     if (locale != null && locale != _currentLocale) {
       _currentLocale = locale;
-      print('DEBUG: changeLanguage() - setting new locale: $_currentLocale');
+      AppLogger.debug('DEBUG: changeLanguage() - setting new locale: $_currentLocale');
       notifyListeners();
       await _saveLanguageToPrefs();
-      print('DEBUG: changeLanguage() - saved to prefs');
+      AppLogger.debug('DEBUG: changeLanguage() - saved to prefs');
     } else {
-      print('DEBUG: changeLanguage() - no change needed or locale not found');
+      AppLogger.debug('DEBUG: changeLanguage() - no change needed or locale not found');
     }
   }
 
@@ -73,7 +74,7 @@ class LanguageProvider extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_languageKey, _currentLocale.languageCode);
     } catch (e) {
-      print('Error saving language preference: $e');
+      AppLogger.debug('Error saving language preference: $e');
     }
   }
 

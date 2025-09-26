@@ -35,7 +35,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 8,
               offset: const Offset(0, -2),
             ),
@@ -53,7 +53,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
           selectedItemColor: Theme.of(context).colorScheme.primary,
           unselectedItemColor: Theme.of(
             context,
-          ).colorScheme.onSurface.withOpacity(0.6),
+          ).colorScheme.onSurface.withValues(alpha: 0.6),
           selectedFontSize: 12,
           unselectedFontSize: 11,
           selectedLabelStyle: const TextStyle(
@@ -68,7 +68,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   color: _selectedIndex == 0
-                      ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                      ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -86,7 +86,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   color: _selectedIndex == 1
-                      ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                      ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -104,7 +104,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   color: _selectedIndex == 2
-                      ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                      ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -122,7 +122,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   color: _selectedIndex == 3
-                      ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                      ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -154,10 +154,10 @@ class TeacherHomeScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.15),
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
                   width: 1,
                 ),
               ),
@@ -184,16 +184,16 @@ class TeacherHomeScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.surface,
         foregroundColor: Theme.of(context).colorScheme.onSurface,
         elevation: 2,
-        shadowColor: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+        shadowColor: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.1),
         actions: [
           IconButton(
             icon: Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
                   width: 1,
                 ),
               ),
@@ -219,12 +219,12 @@ class TeacherHomeScreen extends StatelessWidget {
             icon: Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+                color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: Theme.of(
                     context,
-                  ).colorScheme.secondary.withOpacity(0.2),
+                  ).colorScheme.secondary.withValues(alpha: 0.2),
                   width: 1,
                 ),
               ),
@@ -247,12 +247,12 @@ class TeacherHomeScreen extends StatelessWidget {
             icon: Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.tertiary.withOpacity(0.1),
+                color: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: Theme.of(
                     context,
-                  ).colorScheme.tertiary.withOpacity(0.2),
+                  ).colorScheme.tertiary.withValues(alpha: 0.2),
                   width: 1,
                 ),
               ),
@@ -275,10 +275,10 @@ class TeacherHomeScreen extends StatelessWidget {
             icon: Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: Colors.orange.withOpacity(0.1),
+                color: Colors.orange.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: Colors.orange.withOpacity(0.2),
+                  color: Colors.orange.withValues(alpha: 0.2),
                   width: 1,
                 ),
               ),
@@ -310,7 +310,7 @@ class TeacherHomeScreen extends StatelessWidget {
                     gradient: LinearGradient(
                       colors: [
                         Theme.of(context).colorScheme.primary,
-                        Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                        Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
                         Theme.of(context).colorScheme.secondary,
                       ],
                       begin: Alignment.topLeft,
@@ -321,7 +321,7 @@ class TeacherHomeScreen extends StatelessWidget {
                       BoxShadow(
                         color: Theme.of(
                           context,
-                        ).colorScheme.primary.withOpacity(0.3),
+                        ).colorScheme.primary.withValues(alpha: 0.3),
                         blurRadius: 15,
                         offset: const Offset(0, 8),
                         spreadRadius: 2,
@@ -333,10 +333,10 @@ class TeacherHomeScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
+                          color: Colors.white.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: Colors.white.withOpacity(0.3),
+                            color: Colors.white.withValues(alpha: 0.3),
                             width: 2,
                           ),
                         ),
@@ -357,7 +357,7 @@ class TeacherHomeScreen extends StatelessWidget {
                             Text(
                               'Welcome back,',
                               style: TextStyle(
-                                color: Colors.white.withOpacity(0.9),
+                                color: Colors.white.withValues(alpha: 0.9),
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -381,7 +381,7 @@ class TeacherHomeScreen extends StatelessWidget {
                                 vertical: 6,
                               ),
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.2),
+                                color: Colors.white.withValues(alpha: 0.2),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Row(
@@ -410,7 +410,7 @@ class TeacherHomeScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
+                          color: Colors.white.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Icon(
@@ -496,7 +496,7 @@ class TeacherHomeScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -515,7 +515,7 @@ class TeacherHomeScreen extends StatelessWidget {
                               decoration: BoxDecoration(
                                 color: Theme.of(
                                   context,
-                                ).colorScheme.primary.withOpacity(0.1),
+                                ).colorScheme.primary.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Icon(
@@ -554,7 +554,7 @@ class TeacherHomeScreen extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: Theme.of(
                             context,
-                          ).colorScheme.primary.withOpacity(0.1),
+                          ).colorScheme.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: InkWell(
@@ -625,7 +625,7 @@ class TeacherHomeScreen extends StatelessWidget {
         icon: Container(
           padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(8),
           ),
           child: const Icon(Icons.qr_code_rounded, size: 20),
@@ -652,7 +652,7 @@ class TeacherActivitiesScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
@@ -673,7 +673,7 @@ class TeacherActivitiesScreen extends StatelessWidget {
             icon: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
@@ -708,7 +708,7 @@ class TeacherActivitiesScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.blue.withOpacity(0.1),
+                      color: Colors.blue.withValues(alpha: 0.1),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
@@ -770,7 +770,7 @@ class TeacherAttendanceScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
@@ -791,7 +791,7 @@ class TeacherAttendanceScreen extends StatelessWidget {
             icon: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
@@ -833,7 +833,7 @@ class TeacherAttendanceScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.green.withOpacity(0.1),
+                      color: Colors.green.withValues(alpha: 0.1),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
@@ -947,7 +947,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
             backgroundColor: Theme.of(context).colorScheme.surface,
             foregroundColor: Theme.of(context).colorScheme.onSurface,
             elevation: 2,
-            shadowColor: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+            shadowColor: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.1),
             actions: [
               if (_isEditing)
                 Container(
@@ -969,7 +969,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                     style: TextButton.styleFrom(
                       backgroundColor: Theme.of(
                         context,
-                      ).colorScheme.primary.withOpacity(0.1),
+                      ).colorScheme.primary.withValues(alpha: 0.1),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -983,7 +983,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                     decoration: BoxDecoration(
                       color: Theme.of(
                         context,
-                      ).colorScheme.primary.withOpacity(0.1),
+                      ).colorScheme.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
@@ -1084,7 +1084,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.2),
+                                    color: Colors.black.withValues(alpha: 0.2),
                                     blurRadius: 8,
                                     offset: const Offset(0, 2),
                                   ),
@@ -1109,7 +1109,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                     elevation: 4,
                     shadowColor: Theme.of(
                       context,
-                    ).colorScheme.shadow.withOpacity(0.1),
+                    ).colorScheme.shadow.withValues(alpha: 0.1),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
@@ -1121,7 +1121,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                             Theme.of(context).colorScheme.surface,
                             Theme.of(
                               context,
-                            ).colorScheme.surface.withOpacity(0.8),
+                            ).colorScheme.surface.withValues(alpha: 0.8),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -1139,7 +1139,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                                   decoration: BoxDecoration(
                                     color: Theme.of(
                                       context,
-                                    ).colorScheme.primary.withOpacity(0.1),
+                                    ).colorScheme.primary.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Icon(
@@ -1173,12 +1173,12 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                                 decoration: BoxDecoration(
                                   color: Theme.of(
                                     context,
-                                  ).colorScheme.primary.withOpacity(0.1),
+                                  ).colorScheme.primary.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(8),
                                   border: Border.all(
                                     color: Theme.of(
                                       context,
-                                    ).colorScheme.primary.withOpacity(0.3),
+                                    ).colorScheme.primary.withValues(alpha: 0.3),
                                   ),
                                 ),
                                 child: Row(
@@ -1577,9 +1577,9 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
@@ -1817,7 +1817,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                     border: Border.all(
                       color: Theme.of(
                         context,
-                      ).colorScheme.outline.withOpacity(0.2),
+                      ).colorScheme.outline.withValues(alpha: 0.2),
                     ),
                   ),
                   child: Column(
@@ -1857,7 +1857,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                         height: 1,
                         color: Theme.of(
                           context,
-                        ).colorScheme.outline.withOpacity(0.2),
+                        ).colorScheme.outline.withValues(alpha: 0.2),
                       ),
                       RadioListTile<String>(
                         title: Row(
@@ -1899,7 +1899,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                   decoration: BoxDecoration(
                     color: Theme.of(
                       context,
-                    ).colorScheme.primary.withOpacity(0.1),
+                    ).colorScheme.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
@@ -1930,7 +1930,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen> {
                 style: TextButton.styleFrom(
                   foregroundColor: Theme.of(
                     context,
-                  ).colorScheme.onSurface.withOpacity(0.7),
+                  ).colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
                 child: const Text('Cancel'),
               ),

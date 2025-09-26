@@ -9,10 +9,10 @@ class AdvancedAnalyticsDashboard extends StatefulWidget {
   final String userId;
 
   const AdvancedAnalyticsDashboard({
-    Key? key,
+    super.key,
     required this.userRole,
     required this.userId,
-  }) : super(key: key);
+  });
 
   @override
   State<AdvancedAnalyticsDashboard> createState() =>
@@ -62,7 +62,7 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
@@ -81,7 +81,7 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
         backgroundColor: colorScheme.primary,
         foregroundColor: Colors.white,
         elevation: 4,
-        shadowColor: colorScheme.primary.withOpacity(0.3),
+        shadowColor: colorScheme.primary.withValues(alpha: 0.3),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(60),
           child: Container(
@@ -89,7 +89,7 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
               color: Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),
@@ -196,7 +196,7 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
         gradient: LinearGradient(
           colors: [
             colorScheme.primary,
-            colorScheme.primary.withOpacity(0.8),
+            colorScheme.primary.withValues(alpha: 0.8),
             colorScheme.secondary,
           ],
           begin: Alignment.topLeft,
@@ -205,7 +205,7 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: colorScheme.primary.withOpacity(0.3),
+            color: colorScheme.primary.withValues(alpha: 0.3),
             blurRadius: 15,
             offset: const Offset(0, 8),
             spreadRadius: 2,
@@ -220,7 +220,7 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: const Icon(
@@ -247,7 +247,7 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
                     Text(
                       'Smart recommendations for you',
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withValues(alpha: 0.9),
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
@@ -261,10 +261,10 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
+              color: Colors.white.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 width: 1,
               ),
             ),
@@ -287,7 +287,7 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.25),
+                  color: Colors.white.withValues(alpha: 0.25),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Row(
@@ -314,7 +314,7 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(
@@ -372,8 +372,8 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
                         show: true,
                         gradient: LinearGradient(
                           colors: [
-                            Colors.blue.shade100.withOpacity(0.3),
-                            Colors.blue.shade50.withOpacity(0.1),
+                            Colors.blue.shade100.withValues(alpha: 0.3),
+                            Colors.blue.shade50.withValues(alpha: 0.1),
                           ],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
@@ -416,7 +416,7 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: colorScheme.primary.withOpacity(0.1),
+                color: colorScheme.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
@@ -493,13 +493,13 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
   ) {
     return Card(
       elevation: 4,
-      shadowColor: color.withOpacity(0.2),
+      shadowColor: color.withValues(alpha: 0.2),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           gradient: LinearGradient(
-            colors: [Colors.white, color.withOpacity(0.03)],
+            colors: [Colors.white, color.withValues(alpha: 0.03)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -511,7 +511,7 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Icon(icon, color: color, size: 28),
@@ -610,10 +610,10 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
               width: double.infinity,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: _riskPrediction.riskColor.withOpacity(0.1),
+                color: _riskPrediction.riskColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: _riskPrediction.riskColor.withOpacity(0.3),
+                  color: _riskPrediction.riskColor.withValues(alpha: 0.3),
                 ),
               ),
               child: Column(
@@ -888,13 +888,13 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
 
     return Card(
       elevation: 6,
-      shadowColor: colorScheme.primary.withOpacity(0.1),
+      shadowColor: colorScheme.primary.withValues(alpha: 0.1),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           gradient: LinearGradient(
-            colors: [Colors.white, colorScheme.primary.withOpacity(0.02)],
+            colors: [Colors.white, colorScheme.primary.withValues(alpha: 0.02)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -909,7 +909,7 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: colorScheme.primary.withOpacity(0.1),
+                      color: colorScheme.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
@@ -957,12 +957,12 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
                             decoration: BoxDecoration(
                               color: _getTrendColor(
                                 entry.value,
-                              ).withOpacity(0.1),
+                              ).withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
                                 color: _getTrendColor(
                                   entry.value,
-                                ).withOpacity(0.3),
+                                ).withValues(alpha: 0.3),
                                 width: 1,
                               ),
                             ),
@@ -993,7 +993,7 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
                               gradient: LinearGradient(
                                 colors: [
                                   _getTrendColor(entry.value),
-                                  _getTrendColor(entry.value).withOpacity(0.7),
+                                  _getTrendColor(entry.value).withValues(alpha: 0.7),
                                 ],
                               ),
                             ),
@@ -1024,13 +1024,13 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
 
     return Card(
       elevation: 6,
-      shadowColor: colorScheme.secondary.withOpacity(0.1),
+      shadowColor: colorScheme.secondary.withValues(alpha: 0.1),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           gradient: LinearGradient(
-            colors: [Colors.white, colorScheme.secondary.withOpacity(0.03)],
+            colors: [Colors.white, colorScheme.secondary.withValues(alpha: 0.03)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -1045,7 +1045,7 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: Colors.amber.withOpacity(0.1),
+                      color: Colors.amber.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
@@ -1072,10 +1072,10 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
                   margin: const EdgeInsets.only(bottom: 16),
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: _getPredictionColor(entry.key).withOpacity(0.08),
+                    color: _getPredictionColor(entry.key).withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: _getPredictionColor(entry.key).withOpacity(0.2),
+                      color: _getPredictionColor(entry.key).withValues(alpha: 0.2),
                       width: 1,
                     ),
                   ),
@@ -1087,7 +1087,7 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
                         decoration: BoxDecoration(
                           color: _getPredictionColor(
                             entry.key,
-                          ).withOpacity(0.15),
+                          ).withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Icon(
@@ -1145,13 +1145,13 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
 
     return Card(
       elevation: 6,
-      shadowColor: Colors.green.withOpacity(0.1),
+      shadowColor: Colors.green.withValues(alpha: 0.1),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           gradient: LinearGradient(
-            colors: [Colors.white, Colors.green.withOpacity(0.02)],
+            colors: [Colors.white, Colors.green.withValues(alpha: 0.02)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -1166,7 +1166,7 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.1),
+                      color: Colors.green.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
@@ -1176,13 +1176,15 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
                     ),
                   ),
                   const SizedBox(width: 12),
-                  Text(
-                    'Smart Recommendations',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: colorScheme.onSurface,
-                      letterSpacing: 0.5,
+                  Expanded(
+                    child: Text(
+                      'Smart Recommendations',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.onSurface,
+                        letterSpacing: 0.5,
+                      ),
                     ),
                   ),
                 ],
@@ -1193,10 +1195,10 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
                   margin: const EdgeInsets.only(bottom: 12),
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.green.withOpacity(0.05),
+                    color: Colors.green.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: Colors.green.withOpacity(0.2),
+                      color: Colors.green.withValues(alpha: 0.2),
                       width: 1,
                     ),
                   ),
@@ -1206,7 +1208,7 @@ class _AdvancedAnalyticsDashboardState extends State<AdvancedAnalyticsDashboard>
                       Container(
                         padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: Colors.green.withOpacity(0.15),
+                          color: Colors.green.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Icon(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../utils/logger.dart';
 import 'package:provider/provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../providers/language_provider.dart';
@@ -33,7 +34,7 @@ class DebugTestScreen extends StatelessWidget {
                         const SizedBox(height: 8),
                         ElevatedButton(
                           onPressed: () {
-                            print('TEST: Manually calling toggleTheme()');
+                            AppLogger.demo('TEST: Manually calling toggleTheme()');
                             themeProvider.toggleTheme();
                           },
                           child: const Text('Toggle Theme'),
@@ -69,14 +70,14 @@ class DebugTestScreen extends StatelessWidget {
                         const SizedBox(height: 8),
                         ElevatedButton(
                           onPressed: () {
-                            print('TEST: Manually changing to Hindi');
+                            AppLogger.demo('TEST: Manually changing to Hindi');
                             languageProvider.changeLanguage('हिंदी');
                           },
                           child: const Text('Switch to Hindi'),
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            print('TEST: Manually changing to English');
+                            AppLogger.demo('TEST: Manually changing to English');
                             languageProvider.changeLanguage('English');
                           },
                           child: const Text('Switch to English'),

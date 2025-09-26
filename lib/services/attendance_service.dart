@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 import '../models/attendance.dart';
+import '../utils/logger.dart';
 import 'demo_data_service.dart';
 import 'teacher_notification_service.dart';
 
@@ -211,10 +212,10 @@ class AttendanceService {
     );
 
     // Legacy logging for debugging
-    print(
+    AppLogger.debug(
       '🚨 PROXY ALERT: ${studentDetails['name']} attempted proxy attendance',
     );
-    print('Distance: ${distance.toStringAsFixed(2)}m from classroom');
+    AppLogger.debug('Distance: ${distance.toStringAsFixed(2)}m from classroom');
   }
 
   Future<Map<String, String>> _getStudentDetails(String studentId) async {
@@ -360,13 +361,13 @@ class AttendanceService {
 
       // Notify teacher about successful verification (simplified)
       try {
-        print(
+        AppLogger.debug(
           'INFO: Student $studentId marked attendance with verified identity',
         );
-        print('Session: $classSessionId, Method: $verificationMethod');
+        AppLogger.debug('Session: $classSessionId, Method: $verificationMethod');
       } catch (e) {
         // Continue even if logging fails
-        print('Warning: Failed to log attendance: $e');
+        AppLogger.debug('Warning: Failed to log attendance: $e');
       }
 
       return AttendanceResult(

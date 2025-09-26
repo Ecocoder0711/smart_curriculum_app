@@ -1,4 +1,5 @@
 import 'package:geolocator/geolocator.dart';
+import '../utils/logger.dart';
 
 class LocationVerificationService {
   /// Maximum allowed distance from teacher's location (in meters)
@@ -70,7 +71,7 @@ class LocationVerificationService {
 
       return position;
     } catch (e) {
-      print('Error getting current location: $e');
+      AppLogger.debug('Error getting current location: $e');
       return null;
     }
   }

@@ -569,7 +569,7 @@ class _FacialRecognitionCameraState extends State<FacialRecognitionCamera>
 
   Widget _buildStatusCard() {
     return Card(
-      color: Colors.black.withOpacity(0.7),
+      color: Colors.black.withValues(alpha: 0.7),
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
@@ -605,7 +605,7 @@ class _FacialRecognitionCameraState extends State<FacialRecognitionCamera>
     final color = result.isRecognized ? Colors.green : Colors.orange;
 
     return Card(
-      color: color.withOpacity(0.9),
+      color: color.withValues(alpha: 0.9),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -702,7 +702,7 @@ class FaceOverlayPainter extends CustomPainter {
     if (size.width <= 0 || size.height <= 0) return;
 
     final frameColor = hasDetectedFace ? Colors.green : Colors.blue;
-    paint.color = frameColor.withOpacity(0.8);
+    paint.color = frameColor.withValues(alpha: 0.8);
 
     // Calculate frame size with proper boundaries
     final frameWidth = (size.width * 0.7).clamp(100.0, size.width - 40);
@@ -731,7 +731,7 @@ class FaceOverlayPainter extends CustomPainter {
 
     // Scanning line animation (only when not detected)
     if (!hasDetectedFace && clampedRect.height > 0) {
-      paint.color = Colors.blue.withOpacity(0.6);
+      paint.color = Colors.blue.withValues(alpha: 0.6);
       paint.strokeWidth = 2;
 
       final scanY =
@@ -804,7 +804,7 @@ class FaceOverlayPainter extends CustomPainter {
     // Confidence indicator
     if (hasDetectedFace && confidence > 0) {
       paint.style = PaintingStyle.fill;
-      paint.color = Colors.green.withOpacity(0.8);
+      paint.color = Colors.green.withValues(alpha: 0.8);
 
       final confidenceText = TextPainter(
         text: TextSpan(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'lib/firebase_options.dart';
+import 'lib/utils/logger.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,16 +11,16 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    print('✅ Firebase initialized successfully!');
-    print('📋 Project ID: ${Firebase.app().options.projectId}');
-    print('🔑 API Key: ${Firebase.app().options.apiKey.substring(0, 10)}...');
+    AppLogger.demo('✅ Firebase initialized successfully!');
+    AppLogger.demo('📋 Project ID: ${Firebase.app().options.projectId}');
+    AppLogger.demo('🔑 API Key: ${Firebase.app().options.apiKey.substring(0, 10)}...');
 
     // Test Firebase Auth
     FirebaseAuth auth = FirebaseAuth.instance;
-    print('🔐 Firebase Auth instance created successfully!');
-    print('👤 Current user: ${auth.currentUser?.email ?? 'No user signed in'}');
+    AppLogger.demo('🔐 Firebase Auth instance created successfully!');
+    AppLogger.demo('👤 Current user: ${auth.currentUser?.email ?? 'No user signed in'}');
   } catch (e) {
-    print('❌ Firebase initialization failed: $e');
+    AppLogger.demo('❌ Firebase initialization failed: $e');
   }
 
   runApp(const FirebaseTestApp());

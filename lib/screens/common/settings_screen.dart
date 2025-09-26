@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../providers/language_provider.dart';
 import '../../providers/auth_provider.dart';
+import '../../utils/logger.dart';
 import '../debug/debug_test_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -35,7 +36,7 @@ class SettingsScreen extends StatelessWidget {
                   const SizedBox(height: 16),
                   Consumer<ThemeProvider>(
                     builder: (context, themeProvider, child) {
-                      print(
+                      AppLogger.demo(
                         'DEBUG: ThemeProvider Consumer - isDarkMode: ${themeProvider.isDarkMode}, isLoading: ${themeProvider.isLoading}',
                       );
                       return SwitchListTile(
@@ -49,7 +50,7 @@ class SettingsScreen extends StatelessWidget {
                         onChanged: themeProvider.isLoading
                             ? null
                             : (value) {
-                                print(
+                                AppLogger.demo(
                                   'DEBUG: Dark mode switch tapped - new value: $value',
                                 );
                                 themeProvider.toggleTheme();
@@ -86,7 +87,7 @@ class SettingsScreen extends StatelessWidget {
                   const SizedBox(height: 16),
                   Consumer<LanguageProvider>(
                     builder: (context, languageProvider, child) {
-                      print(
+                      AppLogger.demo(
                         'DEBUG: LanguageProvider Consumer - currentLanguage: ${languageProvider.currentLanguageName}, isLoading: ${languageProvider.isLoading}',
                       );
                       return Column(
@@ -102,7 +103,7 @@ class SettingsScreen extends StatelessWidget {
                             onChanged: languageProvider.isLoading
                                 ? null
                                 : (value) {
-                                    print(
+                                    AppLogger.demo(
                                       'DEBUG: Language radio tapped - new value: $value',
                                     );
                                     if (value != null) {

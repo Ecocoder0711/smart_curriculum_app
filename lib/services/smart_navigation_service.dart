@@ -16,7 +16,7 @@ class SmartNavigationService {
   List<CampusBuilding> _buildings = [];
   List<ClassRoom> _classrooms = [];
   NavigationRoute? _currentRoute;
-  StreamController<NavigationUpdate> _navigationController =
+  final StreamController<NavigationUpdate> _navigationController =
       StreamController.broadcast();
 
   Stream<NavigationUpdate> get navigationUpdates =>

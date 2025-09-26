@@ -338,8 +338,7 @@ class VoiceCommandHelp {
 class VoiceCommandWidget extends StatefulWidget {
   final Function(VoiceCommand) onCommand;
 
-  const VoiceCommandWidget({Key? key, required this.onCommand})
-    : super(key: key);
+  const VoiceCommandWidget({super.key, required this.onCommand});
 
   @override
   State<VoiceCommandWidget> createState() => _VoiceCommandWidgetState();

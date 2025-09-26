@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../utils/logger.dart';
 
 class ThemeProvider extends ChangeNotifier {
   static const String _themeKey = 'isDarkMode';
@@ -21,7 +22,7 @@ class ThemeProvider extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     } catch (e) {
-      print('Error loading theme preference: $e');
+      AppLogger.debug('Error loading theme preference: $e');
       _isLoading = false;
       notifyListeners();
     }
@@ -29,12 +30,12 @@ class ThemeProvider extends ChangeNotifier {
 
   // Toggle between light and dark mode
   Future<void> toggleTheme() async {
-    print('DEBUG: toggleTheme() called - current: $_isDarkMode');
+    AppLogger.debug('DEBUG: toggleTheme() called - current: $_isDarkMode');
     _isDarkMode = !_isDarkMode;
-    print('DEBUG: toggleTheme() - new value: $_isDarkMode');
+    AppLogger.debug('DEBUG: toggleTheme() - new value: $_isDarkMode');
     notifyListeners();
     await _saveThemeToPrefs();
-    print('DEBUG: toggleTheme() - saved to prefs');
+    AppLogger.debug('DEBUG: toggleTheme() - saved to prefs');
   }
 
   // Save theme preference to SharedPreferences
@@ -43,7 +44,7 @@ class ThemeProvider extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(_themeKey, _isDarkMode);
     } catch (e) {
-      print('Error saving theme preference: $e');
+      AppLogger.debug('Error saving theme preference: $e');
     }
   }
 

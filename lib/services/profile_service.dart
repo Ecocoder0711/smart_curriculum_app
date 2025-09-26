@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import '../models/user.dart';
+import '../utils/logger.dart';
 
 class ProfileService {
   // Singleton pattern
@@ -28,7 +29,7 @@ class ProfileService {
       // TODO: Enable this when Firebase Storage billing is set up
 
       // For now, return a placeholder or skip upload
-      print(
+      AppLogger.debug(
         'Storage upload temporarily disabled - requires Firebase billing setup',
       );
 

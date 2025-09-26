@@ -104,11 +104,12 @@ class _BasicQRScannerScreenState extends State<BasicQRScannerScreen> {
     });
 
     try {
-      // Mock face verification - in real implementation, this would use camera
-      await Future.delayed(const Duration(seconds: 3));
-
+      // Get context-dependent values before async operation
       final authProvider = context.read<AuthProvider>();
       final user = authProvider.user;
+      
+      // Mock face verification - in real implementation, this would use camera
+      await Future.delayed(const Duration(seconds: 3));
 
       if (mounted && user != null) {
         setState(() {
@@ -191,7 +192,7 @@ class _BasicQRScannerScreenState extends State<BasicQRScannerScreen> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -397,7 +398,7 @@ class _BasicQRScannerScreenState extends State<BasicQRScannerScreen> {
                         // Flash button
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.5),
+                            color: Colors.black.withValues(alpha: 0.5),
                             borderRadius: BorderRadius.circular(30),
                           ),
                           child: IconButton(
@@ -410,7 +411,7 @@ class _BasicQRScannerScreenState extends State<BasicQRScannerScreen> {
                         // Switch camera button
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.5),
+                            color: Colors.black.withValues(alpha: 0.5),
                             borderRadius: BorderRadius.circular(30),
                           ),
                           child: IconButton(
@@ -426,7 +427,7 @@ class _BasicQRScannerScreenState extends State<BasicQRScannerScreen> {
                   // Scanning indicator
                   if (isProcessing)
                     Container(
-                      color: Colors.black.withOpacity(0.5),
+                      color: Colors.black.withValues(alpha: 0.5),
                       child: const Center(
                         child: CircularProgressIndicator(
                           color: Colors.white,
@@ -444,7 +445,7 @@ class _BasicQRScannerScreenState extends State<BasicQRScannerScreen> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Column(
